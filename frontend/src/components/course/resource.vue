@@ -47,7 +47,7 @@
         </el-col>
          <el-col :span="4" :offset="4">
           <el-input v-model="input" placeholder="资源名称" @keydown.enter.native.prevent="search_clicked"></el-input>
-        </el-col>
+        </el-col>        
         <el-col :span="2" :offset="1">
           <el-button type="button" @click.native="search_clicked">搜索资源</el-button>
         </el-col>
@@ -62,8 +62,8 @@
         </el-col>
       </el-row>
       <el-row style="margin:20px 0px 0px 0px;">
-        <el-col :span="6" :offset="2">
-        <el-row v-for="item in resourcesData" :key = 'key' v-if="item.col1" class="hoverChange"  @click.native="openDialog(item.id)">
+        <el-col :span="6" :offset="2">          
+        <el-row v-for="item in resourcesData" v-if="item.col1" class="hoverChange"  @click.native="openDialog(item.id)">
           <el-row style="margin:20px 0px 0px 0px;" >
             <el-col :span="8" :offset="1">
               <img :src=item.img style="height:100px;"></img>
@@ -100,11 +100,11 @@
             </el-col>
           </el-row>
           <el-row style="margin:5px 0px 0px 0px;height:1px;background-color:black;"></el-row>
-        </el-row>
-        </el-col>
+        </el-row>        
+        </el-col>         
 
         <el-col :span="6" :offset="1">
-          <el-row v-for="item in resourcesData" :key="key1" v-if="item.col2" class="hoverChange"  @click.native="openDialog(item.id)">
+          <el-row v-for="item in resourcesData" v-if="item.col2" class="hoverChange"  @click.native="openDialog(item.id)">
           <el-row style="margin:20px 0px 0px 0px;" >
             <el-col :span="8" :offset="1">
               <img :src=item.img style="height:100px;"></img>
@@ -144,7 +144,7 @@
         </el-row>
         </el-col>
         <el-col :span="6" :offset="1">
-          <el-row v-for="item in resourcesData" :key="key3" v-if="item.col3" class="hoverChange" @click.native="openDialog(item.id)">
+          <el-row v-for="item in resourcesData" v-if="item.col3" class="hoverChange" @click.native="openDialog(item.id)">
           <el-row style="margin:20px 0px 0px 0px;" >
             <el-col :span="8" :offset="1">
               <img :src=item.img style="height:100px;"></img>
@@ -219,12 +219,12 @@
         </el-form-item>
         <el-form-item :label-width="form_label_width">
           <input type="file" value="" id="file">
-        </el-form-item>
-      </el-form>
+        </el-form-item>     
+      </el-form>  
       <span slot="footer" class="dialog-footer">
         <el-button @click="uploadDialogVisible=false">取 消</el-button>
         <el-button type="primary" @click.native="upload">上 传</el-button>
-      </span>
+      </span>      
     </el-dialog>
   </div>
 </template>

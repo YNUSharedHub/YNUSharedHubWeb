@@ -11,13 +11,13 @@ const store = new Vuex.Store({
     intro: '',
     author: '',
     time: '',
-    url: 'http://127.0.0.1:8080/',
+    url: '',
     course_code: '',
     // state relating to login
     user_name: '',
     is_login: false,
     // state relating to debug
-    dev: true
+    dev: false
   },
   mutations: {
   }

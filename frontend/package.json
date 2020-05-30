@@ -14,7 +14,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.17.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.2",
     "element-ui": "^1.4.8",
@@ -22,7 +22,7 @@
     "eslint-loader": "^1.9.0",
     "eslint-plugin-html": "^3.2.2",
     "eventsource-polyfill": "^0.9.6",
-    "jquery": "^3.5.1",
+    "jquery": "^3.2.1",
     "transform-runtime": "^0.0.0",
     "vue": "^2.5.2",
     "vue-quill-editor": "^3.0.4",
