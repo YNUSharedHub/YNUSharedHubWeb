@@ -108,14 +108,12 @@ export default {
           self.is_login = false
           self.$store.state.is_login = false
           self.$store.state.user_name = ''
-          self.is_ynu = false
-          self.$store.state.is_ynu = false
         } else {
           self.is_login = true
           self.$store.state.is_login = true
           self.$store.state.user_name = self.username
-          self.is_ynu = true
-          self.$store.state.is_ynu = true
+          // self.is_ynu = data['is_ynu']
+          // self.$store.state.is_ynu=self.is_ynu
         }
       },
       error: function () {
