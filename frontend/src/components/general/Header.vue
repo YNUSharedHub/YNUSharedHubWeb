@@ -9,6 +9,7 @@
       <el-menu class="el-menu" theme="light" mode="horizontal" @select="handle_select" style="background-color: white;">
         <el-menu-item index="index" class = "el-menu-item" style="margin-right: 20px;">首页</el-menu-item>
         <el-menu-item index="course" class = "el-menu-item"style="margin-right: 20px">课程</el-menu-item>
+        <el-menu-item index="coursetable" class = "el-menu-item" style="margin-right: 20px;" v-show="is_ynu">课程表</el-menu-item>
         <a target="_blank" class="el-menu-item" href="https://jq.qq.com/?_wv=1027&amp;k=5Iw7oPA"  style="text-decoration: none;">加入QQ群</a>
         <a target="_blank" class="el-menu-item" href="https://www.coolapk.com/apk/171502"  style="text-decoration: none;">下载安卓APP</a>
         <a target="_blank" class="el-menu-item" href="https://www.wjx.top/jq/19782727.aspx"  style="text-decoration: none;">反馈和建议</a>
@@ -107,10 +108,14 @@ export default {
           self.is_login = false
           self.$store.state.is_login = false
           self.$store.state.user_name = ''
+          self.is_ynu = false
+          self.$store.state.is_ynu = false
         } else {
           self.is_login = true
           self.$store.state.is_login = true
           self.$store.state.user_name = self.username
+          self.is_ynu = true
+          self.$store.state.is_ynu = true
         }
       },
       error: function () {
@@ -232,6 +237,7 @@ export default {
     return {
       logo_name: 'BUAA-iCourse',
       is_login: false,
+      is_ynu: true,
       login_form_visible: false,
       register_form_visible: false,
       form_label_width: '80px',
@@ -312,6 +318,9 @@ export default {
       }
       else if (key === 'course') {
         this.$router.push({ path: '/course' })
+      }
+      else if (key === 'coursetable') {
+        this.$router.push({ path: '/coursetable' })
       }
     },
     login: function () { this.login_form_visible = true },

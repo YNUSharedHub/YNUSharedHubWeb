@@ -5,6 +5,7 @@ import Editor from '@/components/forum/Editor'
 import Thread from '@/components/forum/Thread'
 import Index from '@/components/Index'
 import Course from '@/components/course/Course'
+import Coursetable from '@/components/course/Coursetable'
 import Resource from '@/components/course/resource'
 import Personal from '@/components/Personal'
 import PersonalData from '@/components/PersonalData'
@@ -42,6 +43,11 @@ export default new Router({
       path: '/course',
       name: 'course',
       component: Course
+    },
+    {
+      path: '/coursetable',
+      name: 'coursetable',
+      component: Coursetable
     },
     {
       path: '/course/page/:course_id',
