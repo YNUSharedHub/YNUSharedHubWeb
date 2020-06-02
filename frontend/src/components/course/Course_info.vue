@@ -27,22 +27,29 @@
                 </el-row>
               </span>
             </div>
-            <div class="text item">
-              授课教师: {{ teacher }}
+            <div>
+              <div class="text item">
+                授课教师: {{ teacher }}
+              </div>
+              <div class="text item">
+                开课院系: {{ academy }}
+              </div>
+              <div class="text item">
+                学时: {{ hours }}
+              </div>
+              <div class="text item">
+                课程介绍: {{ intro_info }}
+              </div>
+              <div class="text item">
+                点击: {{ visit_count }}
+              </div>
             </div>
-            <div class="text item">
-              开课院系: {{ academy }}
+            <div style="border-top: 1px solid silver;margin-top: 20px;padding-top: 20px;">
+              <h1 style="font-weight:500;">成绩分析</h1>
+              <div id="pieReport" ref="pieReport" style="width: 400px;height: 350px;"></div>
             </div>
-            <div class="text item">
-              学时: {{ hours }}
-            </div>
-            <div class="text item">
-              课程介绍: {{ intro_info }}
-            </div>
-            <div class="text item">
-              点击: {{ visit_count }}
-            </div>
-            </el-card>
+          </el-card>
+            
           </div>     
         </el-col>
 
@@ -206,6 +213,7 @@
 <script type="text/javascript">
 /* eslint-disable camelcase */
 /* eslint-disable space-infix-ops */
+import echarts from 'echarts'
 import Header from '../general/Header.vue'
 import DocImg from './../../assets/fileico/docx_win.png'
 import PdfImg from './../../assets/fileico/pdf.png'
@@ -222,6 +230,9 @@ import college_map from '../general/collegeMap.js'
 export default {
   name: 'course_info',
   components: { Header, ResourceDialog },
+  created() {
+    this.drawPie();
+  },
   beforeCreate () {
     var self = this
     var course_id = this.$route.params.course_id
@@ -289,6 +300,12 @@ export default {
   },
   data () {
     return {
+      charts: "",
+      opinion: ["及格人数", "未及格人数"],
+      opinionData: [
+        { value: 12, name: "及格人数", itemStyle: "#1ab394" },
+        { value: 18, name: "未及格人数", itemStyle: "#79d2c0" }
+      ],
       course_id: this.$route.params.course_id,
       like_count: 0,
       liked: false,
@@ -328,6 +345,43 @@ export default {
     }
   },
   methods: {
+    drawPie: function() {
+      // let charts = echarts.init(document.getElementById("pieReport"));
+      this.charts =  this.$refs.pieReport
+      this.charts.setOption({
+        tooltip: {
+          trigger: "item",
+          formatter: "{a}<br/>{b}:{c} ({d}%)"
+        },
+        legend: {
+          bottom: 10,
+          left: "center",
+          data: this.opinion
+        },
+        series: [
+          {
+            name: "状态",
+            type: "pie",
+            radius: "65%",
+            center: ["50%", "50%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)"
+              },
+              color: function(params) {
+                //自定义颜色
+                var colorList = ["#1ab394", "#79d2c0"];
+                return colorList[params.dataIndex];
+              }
+            },
+            data: this.opinionData
+          }
+        ]
+      });
+    },
     course_like: function () {
       var post_url = ''
       var post_data = { course_id: this.course_id }
@@ -654,9 +708,9 @@ export default {
     padding-bottom: 5px;
   }
   .course_resource_container{
-    position:absolute;
-    top:400px;
-    margin-top: 40px;
+    /* position:absolute; */
+    /* top:400px; */
+    margin-top: 20px;
     padding-left: 20px;
     width: 71%;
   }

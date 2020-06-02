@@ -13,6 +13,7 @@ import Courseinfo from '@/components/course/Course_info'
 import Forum from '@/components/forum/Forum'
 import Router from 'vue-router'
 import Passport from '@/components/Passport'
+import Score from '@/components/course/Score'
 
 Vue.use(ElementUI)
 Vue.use(Router)
@@ -48,6 +49,11 @@ export default new Router({
       path: '/coursetable',
       name: 'coursetable',
       component: Coursetable
+    },
+    {
+      path: '/score',
+      name: 'score',
+      component: Score
     },
     {
       path: '/course/page/:course_id',

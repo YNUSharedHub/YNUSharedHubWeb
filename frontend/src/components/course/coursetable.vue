@@ -13,6 +13,7 @@
   //   reqFindTeacherLesson
   // } from "../../config/api";
   import Header from '../general/Header'
+  import get_url from '../general/getUrl.js'
 
   export default {
     data() {
@@ -28,7 +29,23 @@
       "v-ClassTable": ClassTable,
       Header
     },
-    created() {
+    beforecreated() {
+      var post_url = get_url(this.$store.state.dev, '/coursetable/')
+      var post_data = {"id":this.$store.state.userid}
+      $.ajax({
+      ContentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      url: post_url,
+      type: 'POST',
+      data: post_data,
+      success: function (data) {
+        this.classTableData.courses = data
+        console.log(data)
+      },
+      error: function () {
+        alert('获取课表信息失败')
+      }
+      })
       // const {
       //   userId,
       //   userName,
@@ -37,36 +54,36 @@
       //   this.$cookie.get("userInfo")
       // );
       // this.findTeacherLesson(userName);
-      this.classTableData.courses = [
-        [{
-            "id": 1,  // 课程编号
-            "classId": 2,   //学院编号
-            "lessonsTime": "8:00-9:40",
-            "lessonsName": "计算机导论",
-            "lessonsAddress": "二教302",
-            "lessonsTeacher": "吴老师",
-            "lessonsRemark": "1-17周",
-            "lessonsNumber": "1",   // 第几节课（1:12 2:34 3:56 4:78 5:910）
-            "weekday": "星期一"
-          },
-          {
-            "id": 19,
-            "classId": 2,
-            "lessonsTime": "8:00-9:40",
-            "lessonsName": "编译原理",
-            "lessonsAddress": "二教302",
-            "lessonsTeacher": "吴老师",
-            "lessonsRemark": "1-5,8-12周",
-            "lessonsNumber": "1",
-            "weekday": "星期四"
-          },
-          {}, {}, {},{}, {}
-        ],    // 12节
-        [{}, {}, {},{}, {},{}, {}],   // 34节
-        [{}, {}, {},{}, {},{}, {}],   // 56节
-        [{}, {}, {},{}, {},{}, {}],   // 78节
-        [{}, {}, {},{}, {},{}, {}],   // 910节
-      ]
+      // this.classTableData.courses = [
+      //   [{
+      //       "id": 1,  // 课程编号
+      //       "classId": 2,   //学院编号
+      //       "lessonsTime": "8:00-9:40",
+      //       "lessonsName": "计算机导论",
+      //       "lessonsAddress": "二教302",
+      //       "lessonsTeacher": "吴老师",
+      //       "lessonsRemark": "1-17周",
+      //       "lessonsNumber": "1",   // 第几节课（1:12 2:34 3:56 4:78 5:910）
+      //       "weekday": "星期一"
+      //     },
+      //     {
+      //       "id": 19,
+      //       "classId": 2,
+      //       "lessonsTime": "8:00-9:40",
+      //       "lessonsName": "编译原理",
+      //       "lessonsAddress": "二教302",
+      //       "lessonsTeacher": "吴老师",
+      //       "lessonsRemark": "1-5,8-12周",
+      //       "lessonsNumber": "1",
+      //       "weekday": "星期四"
+      //     },
+      //     {}, {}, {},{}, {}
+      //   ],    // 12节
+      //   [{}, {}, {},{}, {},{}, {}],   // 34节
+      //   [{}, {}, {},{}, {},{}, {}],   // 56节
+      //   [{}, {}, {},{}, {},{}, {}],   // 78节
+      //   [{}, {}, {},{}, {},{}, {}],   // 910节
+      // ]
     },
     methods: {
       // 查询教师课表
