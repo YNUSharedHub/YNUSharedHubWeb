@@ -114,8 +114,8 @@ export default {
           self.$store.state.is_login = true
           self.$store.state.user_name = self.username
           self.$store.state.userid = data['id']
-          // self.is_ynu = data['is_ynu']
-          // self.$store.state.is_ynu=self.is_ynu
+          self.is_ynu = data['is_ynu']
+          self.$store.state.is_ynu=self.is_ynu
         }
       },
       error: function () {
@@ -237,7 +237,7 @@ export default {
     return {
       logo_name: 'BUAA-iCourse',
       is_login: false,
-      is_ynu: true,
+      is_ynu: false,
       login_form_visible: false,
       register_form_visible: false,
       form_label_width: '80px',

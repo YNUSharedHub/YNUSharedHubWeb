@@ -230,7 +230,7 @@ import college_map from '../general/collegeMap.js'
 export default {
   name: 'course_info',
   components: { Header, ResourceDialog },
-  created() {
+  mounted() {
     this.drawPie();
   },
   beforeCreate () {
@@ -347,7 +347,7 @@ export default {
   methods: {
     drawPie: function() {
       // let charts = echarts.init(document.getElementById("pieReport"));
-      this.charts =  this.$refs.pieReport
+      this.charts =  echarts.init(this.$refs.pieReport)
       this.charts.setOption({
         tooltip: {
           trigger: "item",
