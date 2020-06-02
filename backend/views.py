@@ -1,5 +1,7 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from numpy import unicode
+
 from backend import interface
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -12,7 +14,7 @@ from django.db.models import Q, Sum
 from django.views.generic.base import View
 from django.shortcuts import render
 from .email_send import *
-
+from .course_crawler import *
 import requests
 import urllib.request
 import json
@@ -25,6 +27,8 @@ import time
 from django.utils.http import urlquote
 
 from backend import notification
+
+url = 'https://ids.ynu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.ynu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.ynu.edu.cn%2Fnew%2Findex.html'
 
 
 def page404(request):
@@ -93,10 +97,10 @@ def userRegister(request):
             profile.gender = gender
             profile.nickname = nickname
             profile.intro = intro
-            profile.college_id=1
+            profile.college_id = 1
             profile.save()
             print(1)
-            #注册成功以后自动进行登录，登录前需要先验证，去掉注释后需要修改your url，HttpResponseRedirect进行页面重定向
+            # 注册成功以后自动进行登录，登录前需要先验证，去掉注释后需要修改your url，HttpResponseRedirect进行页面重定向
             # newUser=auth.authenticate(username=username,password=password1)
             # if newUser is not None:
             #     auth.login(request, newUser)
@@ -409,7 +413,7 @@ def userLogin(request):
             if user is not None:
                 auth.login(request, user)
                 request.session['username'] = username  # store in session
-                print (json.dumps({'error': 0, 'username': user.username}))
+                print(json.dumps({'error': 0, 'username': user.username}))
                 return HttpResponse(json.dumps({'error': 0, 'username': user.username}))
             else:
                 return HttpResponse(json.dumps({'error': 101}))  # username not exists
@@ -453,7 +457,11 @@ def isLoggedIn(request):
             return HttpResponse(json.dumps(None))
 
         username = interface.get_username(user_session)
-        return HttpResponse(json.dumps(username))
+        # print(username)
+        id = User.objects.get(username=username['username']).id
+        is_ynu = UserProfile.objects.get(user_id=id).is_ynu
+        print(json.dumps({'username': username, 'userid': id, 'is_ynu': is_ynu}))
+        return HttpResponse(json.dumps({'username': username, 'userid': id, 'is_ynu': is_ynu}))
 
 
 def http_get(url):
@@ -2111,3 +2119,117 @@ def resource_query(
             if (i['score'] >= 0):  # 排除掉匹配结果太低的
                 ans.append(i['id'])
         return HttpResponse(json.dumps({'query_list': ans}, cls=ComplexEncoder))
+
+
+@csrf_exempt
+def course_table(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        # print(data)
+        user_course = User.objects.get(id=data.get('id')).course_set.all()
+        # print(type(user_course[0]))
+        course_list = []
+        if user_course:
+            for course in user_course:
+                course_list.append(objects_to_json(course, Course))
+            print(course_list)
+            return HttpResponse(json.dumps({'course_list': course_list}))
+        else:
+            user = UserProfile.objects.get(user_id=data.get('id'))
+            username = user.studentid
+            password = user.studentpassword
+            course_list = course_crawler(url, username, password)
+            for course in course_list:
+                try:
+                    one_course = Course.objects.filter(name=course['KCM'], teacher=course['SKJS']).first()
+                    user = User.objects.get(id=data.get('id'))
+                    one_course.student.add(user)
+                    user_course = User.objects.get(id=data.get('id')).course_set.all()
+                    for course in user_course:
+                        course_list.append(objects_to_json(course, Course))
+                except:
+                    pass
+            print(course_list)
+            return HttpResponse(json.dumps({'course_list': course_list}))
+    else:
+        print(1)
+        return 1
+        # user.
+
+
+def objects_to_json(objects, model):
+    """
+    将 model对象 转化成 json
+        example：
+            1. objects_to_json(Test.objects.get(test_id=1), EviewsUser)
+            2. objects_to_json(Test.objects.all(), EviewsUser)
+    :param objects: 已经调用all 或者 get 方法的对象
+    :param model: objects的 数据库模型类
+    :return:
+    """
+    from collections import Iterable
+    concrete_model = model._meta.concrete_model
+    list_data = []
+
+    # 处理不可迭代的 get 方法
+    if not isinstance(object, Iterable):
+        objects = [objects, ]
+
+    for obj in objects:
+        dict_data = {}
+        # print(concrete_model._meta.local_fields)
+        for field in concrete_model._meta.local_fields:
+            if field.name == 'user_id':
+                continue
+            value = field.value_from_object(obj)
+            dict_data[field.name] = value
+        list_data.append(dict_data)
+
+    data = json_encode_list(list_data)
+    return data
+
+
+def json_encode_list(list_data):
+    """
+    将列表中的字典元素转化为对象
+    :param list_data:
+    :return:
+    """
+    json_res = "["
+    for item in list_data:
+        json_res = json_res + json_encode_dict(item) + ", "
+    return json_res[:-2] + "]"
+
+
+def json_encode_dict(dict_data):
+    """
+    将字典转化为json序列
+    :param dict_data:
+    :return:
+    """
+    json_data = "{"
+    for (k, v) in dict_data.items():
+        json_data = json_data + json_field(k) + ':' + json_field(v) + ', '
+    json_data = json_data[:-2] + "}"
+    return json_data
+
+
+def json_field(field_data):
+    """
+    将字典的键值转化为对象
+    :param field_data:
+    :return:
+    """
+    if isinstance(field_data, str):
+        return "\"" + field_data + "\""
+    elif isinstance(field_data, bool):
+        if field_data == 'False':
+            return 'false'
+        else:
+            return 'true'
+    elif isinstance(field_data, unicode):
+        return "\"" + field_data.encode('utf-8') + "\""
+    elif field_data is None:
+        return "\"\""
+    else:
+        return "\"" + str(field_data) + "\""

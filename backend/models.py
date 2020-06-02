@@ -6,18 +6,30 @@ import datetime
 # Course Model
 class Course(models.Model):
     name = models.CharField(max_length=30)
-    college_id = models.PositiveIntegerField()
-    class_id = models.PositiveSmallIntegerField()
-    hours = models.SmallIntegerField()
+    college_id = models.PositiveIntegerField(default=1)
+    class_id = models.PositiveSmallIntegerField(default=1)
+    hours = models.SmallIntegerField(default=64)
     credit = models.DecimalField(max_digits=2, decimal_places=1)
-    course_code = models.CharField(max_length=10)
+    course_code = models.CharField(max_length=1000,null=True)
     visit_count = models.IntegerField()
     teacher = models.CharField(max_length=100, null=True)
     elective = models.SmallIntegerField(default=0)
+    student = models.ManyToManyField(User,max_length=128,through='Coursestudentgrade')
+    average_grade = models.CharField(max_length=10,null=True)
+    lessonsAddress = models.CharField(max_length=1000,null=True)
+    XQ1 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ2 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ3 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ4 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ5 = models.CharField(max_length=1000,blank=True,null=True)
 
     def __str__(self):
         return str(self.id)
 
+class Coursestudentgrade(models.Model):
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    grade =models.CharField(max_length=10,null=True,blank=True)
 
 # Resource Model
 class Resource(models.Model):
@@ -49,7 +61,6 @@ class Teacher(models.Model):
 # College Model
 class College(models.Model):
     name = models.CharField(max_length=30)
-
     def __str__(self):
         return str(self.id)
 
@@ -89,10 +100,22 @@ class UserProfile(models.Model):
     intro = models.TextField()
     college_id = models.PositiveIntegerField(blank=True, default=None)
     user_photo = models.ImageField(upload_to='user_photo', null=True, blank=True)
+    is_ynu = models.CharField(max_length=1,default='0')
+    studentid = models.CharField(max_length=20,null=True,blank=True)
+    studentpassword = models.CharField(max_length=100,null=True,blank=True)
 
     def __str__(self):
         return str(self.user.id)
 
+class Course_Table(models.Model):
+    lessonsName = models.CharField(max_length=1000,null=True)
+    lessonsAddress = models.CharField(blank=True,max_length=1000,null=True)
+    lessonsTeacher = models.CharField(max_length=1000,null=True)
+    XQ1 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ2 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ3 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ4 = models.CharField(max_length=1000,blank=True,null=True)
+    XQ5 = models.CharField(max_length=1000,blank=True,null=True)
 
 class Resource_Evaluation(models.Model):
     user_id = models.IntegerField()

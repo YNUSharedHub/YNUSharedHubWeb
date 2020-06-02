@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
-from .models import UserProfile, Course, Resource, Report
+from .models import UserProfile, Course, Resource, Report,Course_Table
 
 
 class ProfileInline(admin.StackedInline):
@@ -33,3 +33,4 @@ admin.site.register(User, UserProfileAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Resource, ResourceAdmin)
 admin.site.register(Report, ReportAdmin)
+# admin.site.register(Course_Table)
