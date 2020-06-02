@@ -57,7 +57,7 @@ urlpatterns = [
     url(r'^course/like/cancel/$', backend_views.course_cancel_like, name='course_cancel_like'),
     url(r'^course/like/count/$', backend_views.course_like_count, name='course_like_count'),
     url(r'^course/like/list/$', backend_views.user_like_course_namelist, name='course_like_list'),
-    
+
     url(r'^resource/download/most/$', backend_views.most_download_resource_list, name='most_download_resource_list'),
     url(r'^login_tongpao/$', backend_views.login_tongpao, name='login_tongpao'),
     url(r'^passport/auth/$', backend_views.tongpao, name='tongpao'),
@@ -97,7 +97,7 @@ urlpatterns = [
     url(r'^user/modify/info/$',backend_views.user_modify_info,name='user_modify_info'),
     # notifications
     url(r'^notifications/', include(notifications.urls, namespace='notifications')),
-
+    url(r'studentnotifications/',backend_views.verify_student),
     # home
     url(r'^post/hot/idlist/$', backend_views.post_id_list_by_click_count),
     url(r'^post/latest/idlist/$', backend_views.post_id_list_by_update_time),
@@ -108,4 +108,6 @@ urlpatterns = [
 
     #email verify
     url(r'^active/(?P<active_code>.*)/$', backend_views.ActiveUserView.as_view(), name="user_active"),  # 提取出active后的所有字符赋给active_code
+    url(r'^coursetable/', backend_views.course_table)
 ]
+
