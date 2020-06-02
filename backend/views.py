@@ -15,6 +15,7 @@ from django.views.generic.base import View
 from django.shortcuts import render
 from .email_send import *
 from .course_crawler import *
+from .verify_student import *
 import requests
 import urllib.request
 import json
@@ -2120,7 +2121,7 @@ def resource_query(
                 ans.append(i['id'])
         return HttpResponse(json.dumps({'query_list': ans}, cls=ComplexEncoder))
 
-
+# coursetable/
 @csrf_exempt
 def course_table(request):
     if request.method == "POST":
@@ -2233,3 +2234,21 @@ def json_field(field_data):
         return "\"\""
     else:
         return "\"" + str(field_data) + "\""
+
+# studentnotifications/
+@csrf_exempt
+def verify_studentid(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        # print(data)
+        student_id = data['username']
+        student_password = data['password']
+        result_bool = verify_studentid(student_id,student_password)
+        if result_bool:
+            user = User.objects.filter(id=data['id']).first()
+            user.studentid=student_id
+            user.studentpassword=student_password
+            user.save()
+            return HttpResponse(json.dumps({'result':True}))
+        else:
+            return HttpResponse(json.dumps({'result':False}))
