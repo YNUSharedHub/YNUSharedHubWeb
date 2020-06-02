@@ -128,6 +128,8 @@ def user_information_by_username(username):
     result['gender'] = profile.gender
     result['intro'] = profile.intro
     result['college_id'] = profile.college_id
+    result['studentid'] = profile.studentid
+    result['is_ynu'] = profile.is_ynu
     return result
 
 
@@ -135,7 +137,7 @@ def user_information_by_id(user_id):
     result = User.objects.filter(id=user_id)
     if (len(result) == 0):
         return {}
-    result = result.values('username', 'email', "is_superuser")[0]
+    result = result.values('username', 'email', "is_superuser","is_ynu","studentid")[0]
     return result
 
 

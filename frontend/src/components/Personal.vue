@@ -131,11 +131,11 @@
     <el-dialog title="认证绑定学号" :visible.sync="isynu_visible">
       <el-form :model="ynuform" label-position="top" ref="ynuform">
         <el-form-item label="学号" type="text" :label-width="form_label_width" prop="username" required>
-          <el-input v-model="form.username" auto-complete="off" placeholder="统一身份认证学号"></el-input>
+          <el-input v-model="ynuform.username" auto-complete="off" placeholder="统一身份认证学号"></el-input>
         </el-form-item>
 
         <el-form-item label="密码" type="password" :label-width="form_label_width" prop="password" required>
-          <el-input v-model="form.password" auto-complete="off" placeholder="统一身份认证密码"></el-input>
+          <el-input v-model="ynuform.password" auto-complete="off" placeholder="统一身份认证密码"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -427,10 +427,11 @@
 
       stunum_cinfirm_clicked: function (form_name) {
         this.$refs[form_name].validate((valid) => {
-          var post_url = get_url(this.$store.state.dev, '/user/ynucheck/')
+          var post_url = get_url(this.$store.state.dev, '/studentnotifications/')
           var post_data = {
-            username: this.ynuform.username,
-            password: this.ynuform.password
+            'username': this.ynuform.username,
+            'password': this.ynuform.password,
+            'id': this.$store.state.userid
           }
           $.ajax({
             ContentType: 'application/json; charset=utf-8',
@@ -439,12 +440,16 @@
             type: 'POST',
             data: post_data,
             success: function (data) {
-              var code = data['error']
-              if (code === 0) {
-                this.isynu_visible = false
-                this.$router.go(0)
-              } else if (code === 1) {
-                this.$message({
+              var _this = this
+              var code = data['result']
+              if (code) {
+                _this.isynu_visible = false
+                _this.$store.state.is_ynu = true
+                _this.is_ynu = true
+                _this.stunum = this.ynuform.username
+                _this.$router.go(0)
+              } else {
+                _this.$message({
                   showClose: true,
                   type: 'error',
                   message: '学号或密码错误'
@@ -577,8 +582,14 @@
           personalSelf.form.college_id = college_id
           personalSelf.email = user_info['email']
           personalSelf.is_superuser = user_info['is_superuser']
-          personalSelf.stunum = user_info['stunum'] // 学号
-          personalSelf.is_ynu = user_info['is_ynu'] // 是否绑定
+          personalSelf.stunum = user_info['studentid'] // 学号
+          if(user_info['is_ynu']==='1'){
+            personalSelf.is_ynu = true
+          }
+          else{
+            personalSelf.is_ynu = false
+          }
+          
         },
         error: function () {
           alert('fail')

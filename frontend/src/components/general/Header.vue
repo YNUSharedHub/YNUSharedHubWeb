@@ -95,7 +95,7 @@ import get_url from './getUrl.js'
 // import json from 'json5'
 export default {
   name: 'Header',
-  beforeCreate: function () {
+  mounted: function () {
     var self = this
     var post_url = get_url(this.$store.state.dev, '/sign/logged_in/')
     $.ajax({
@@ -113,7 +113,7 @@ export default {
           self.is_login = true
           self.$store.state.is_login = true
           self.$store.state.user_name = self.username
-          self.$store.state.userid = data['id']
+          self.$store.state.userid = data['userid']
           self.is_ynu = data['is_ynu']
           self.$store.state.is_ynu=self.is_ynu
         }
@@ -349,9 +349,12 @@ export default {
             case 0:
               self.is_login = false
               self.username = null
+              self.is_ynu = false
               self.message('success', '登出成功')
               self.$store.state.is_login = false
               self.$store.state.user_name = ''
+              self.$store.state.is_ynu = false
+              self.$store.state.userid = null
               location.reload()
               break
             case 301:

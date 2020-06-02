@@ -298,7 +298,6 @@ def user_information(request):
         if 'username' in request.POST.keys():
             username = str(request.POST.get('username'))
             user_info = interface.user_information_by_username(username)
-            print(1)
         elif 'id' in request.POST.keys():
             user_id = str(request.POST.get('id'))
             user_info = interface.user_information_by_id(user_id)
@@ -461,8 +460,12 @@ def isLoggedIn(request):
         # print(username)
         id = User.objects.get(username=username['username']).id
         is_ynu = UserProfile.objects.get(user_id=id).is_ynu
-        print(json.dumps({'username': username, 'userid': id, 'is_ynu': is_ynu}))
-        return HttpResponse(json.dumps({'username': username, 'userid': id, 'is_ynu': is_ynu}))
+        if(is_ynu=='0'):
+            reis_ynu = False
+        else:
+            reis_ynu = True
+        print(json.dumps({'username': username, 'userid': id, 'is_ynu': reis_ynu}))
+        return HttpResponse(json.dumps({'username': username['username'], 'userid': id, 'is_ynu': reis_ynu}))
 
 
 def http_get(url):
@@ -2239,15 +2242,18 @@ def json_field(field_data):
 @csrf_exempt
 def verify_studentid(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        # print(data)
+        # data = json.loads(request.body)
+        data = json.dumps(request.POST)  # new
+        data = json.loads(data)
+        print(data)
         student_id = data['username']
         student_password = data['password']
-        result_bool = verify_studentid(student_id,student_password)
+        result_bool = verify_student(student_id,student_password)
         if result_bool:
-            user = User.objects.filter(id=data['id']).first()
+            user = UserProfile.objects.filter(user_id=data['id']).first()
             user.studentid=student_id
             user.studentpassword=student_password
+            user.is_ynu = '1'
             user.save()
             return HttpResponse(json.dumps({'result':True}))
         else:

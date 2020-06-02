@@ -97,7 +97,8 @@ urlpatterns = [
     url(r'^user/modify/info/$',backend_views.user_modify_info,name='user_modify_info'),
     # notifications
     url(r'^notifications/', include(notifications.urls, namespace='notifications')),
-    url(r'studentnotifications/',backend_views.verify_student),
+    url(r'studentnotifications/',backend_views.verify_studentid),
+    
     # home
     url(r'^post/hot/idlist/$', backend_views.post_id_list_by_click_count),
     url(r'^post/latest/idlist/$', backend_views.post_id_list_by_update_time),
