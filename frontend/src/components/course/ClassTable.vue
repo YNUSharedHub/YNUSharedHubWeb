@@ -16,7 +16,7 @@
               <td v-for="(innerItem,idx) in item" :key="idx" @click="toScanDetail(innerItem,idx)">
                 <div style v-if="innerItem.lessonsName" :style="{background:colorArrays[idx%9]}">
                   <h4>{{innerItem.lessonsName}}</h4>
-                  <p style="margin-top: 7px;">{{innerItem.lessonsAddress}}</p>
+                  <p style="margin-top: 7px;margin-bottom: 5px;">{{innerItem.lessonsAddress}}</p>
                   <p>{{innerItem.lessonsTeacher}}</p>
                   <p style="margin-top: 5px;">{{innerItem.lessonsRemark}}</p>
                 </div>
@@ -88,6 +88,7 @@
     background-image: url("./cousretablepackground.png");
     /* background-size:; */
     background-repeat: no-repeat;
+    background-size: cover;
   }
 
   * {

@@ -8,6 +8,7 @@ import store from './vuex/store'
 import router from './router'
 import VueQuillEditor from 'vue-quill-editor'
 
+// Vue.use(axios)
 Vue.use(ElementUI)
 Vue.use(Vuex)
 Vue.use(VueQuillEditor)

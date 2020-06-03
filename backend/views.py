@@ -2124,20 +2124,21 @@ def resource_query(
                 ans.append(i['id'])
         return HttpResponse(json.dumps({'query_list': ans}, cls=ComplexEncoder))
 
-# coursetable/
+# getcoursetable/
 @csrf_exempt
 def course_table(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        # print(data)
+        # data = json.loads(request.body)
+        data = json.dumps(request.POST)  # new
+        data = json.loads(data)
         user_course = User.objects.get(id=data.get('id')).course_set.all()
         # print(type(user_course[0]))
         course_list = []
         if user_course:
             for course in user_course:
-                course_list.append(objects_to_json(course, Course))
+                course_list.append(eval(objects_to_json(course, Course))[0])
             print(course_list)
-            return HttpResponse(json.dumps({'course_list': course_list}))
+            # return HttpResponse(json.dumps({'course_list': course_list}))
         else:
             user = UserProfile.objects.get(user_id=data.get('id'))
             username = user.studentid
@@ -2150,11 +2151,90 @@ def course_table(request):
                     one_course.student.add(user)
                     user_course = User.objects.get(id=data.get('id')).course_set.all()
                     for course in user_course:
-                        course_list.append(objects_to_json(course, Course))
+                        course_list.append(eval(objects_to_json(course, Course))[0])
                 except:
                     pass
             print(course_list)
-            return HttpResponse(json.dumps({'course_list': course_list}))
+
+        respondlist=[]
+        for i in range(5):
+            coursehourlist=[]
+            for j in range(7):
+                coursehourlist.append({})
+            respondlist.append(coursehourlist)
+        
+        for li in course_list:
+            if li['XQ1']:
+                col = 0
+                coursetimes = li['XQ1'].split(',')
+                for cts in coursetimes:
+                    courseitem = {}
+                    place = cts.index(' ')
+                    coursetime = cts[place:cts.index('-',place+1)]
+                    courseitem['id'] = li['id']
+                    courseitem['lessonsName'] = li['name']
+                    courseitem['lessonsAddress'] = li['lessonsAddress']
+                    courseitem['lessonsTeacher'] = li['teacher']
+                    courseitem['lessonsRemark'] = cts.split(' ')[0]
+                    print(int(int(coursetime)/2))
+                    respondlist[int(int(coursetime)/2)][col]=courseitem
+            if li['XQ2']:
+                col = 1
+                coursetimes = li['XQ2'].split(',')
+                for cts in coursetimes:
+                    courseitem = {}
+                    place = cts.index(' ')
+                    coursetime = cts[place:cts.index('-',place+1)]
+                    courseitem['id'] = li['id']
+                    courseitem['lessonsName'] = li['name']
+                    courseitem['lessonsAddress'] = li['lessonsAddress']
+                    courseitem['lessonsTeacher'] = li['teacher']
+                    courseitem['lessonsRemark'] = cts.split(' ')[0]
+                    print(int(int(coursetime)/2))
+                    respondlist[int(int(coursetime)/2)][col]=courseitem
+            if li['XQ3']:
+                col = 2
+                coursetimes = li['XQ3'].split(',')
+                for cts in coursetimes:
+                    courseitem = {}
+                    place = cts.index(' ')
+                    coursetime = cts[place:cts.index('-',place+1)]
+                    courseitem['id'] = li['id']
+                    courseitem['lessonsName'] = li['name']
+                    courseitem['lessonsAddress'] = li['lessonsAddress']
+                    courseitem['lessonsTeacher'] = li['teacher']
+                    courseitem['lessonsRemark'] = cts.split(' ')[0]
+                    print(int(int(coursetime)/2))
+                    respondlist[int(int(coursetime)/2)][col]=courseitem
+            if li['XQ4']:
+                col = 3
+                coursetimes = li['XQ4'].split(',')
+                for cts in coursetimes:
+                    courseitem = {}
+                    place = cts.index(' ')
+                    coursetime = cts[place:cts.index('-',place+1)]
+                    courseitem['id'] = li['id']
+                    courseitem['lessonsName'] = li['name']
+                    courseitem['lessonsAddress'] = li['lessonsAddress']
+                    courseitem['lessonsTeacher'] = li['teacher']
+                    courseitem['lessonsRemark'] = cts.split(' ')[0]
+                    print(int(int(coursetime)/2))
+                    respondlist[int(int(coursetime)/2)][col]=courseitem
+            if li['XQ5']:
+                col = 4
+                coursetimes = li['XQ5'].split(',')
+                for cts in coursetimes:
+                    courseitem = {}
+                    place = cts.index(' ')
+                    coursetime = cts[place:cts.index('-',place+1)]
+                    courseitem['id'] = li['id']
+                    courseitem['lessonsName'] = li['name']
+                    courseitem['lessonsAddress'] = li['lessonsAddress']
+                    courseitem['lessonsTeacher'] = li['teacher']
+                    courseitem['lessonsRemark'] = cts.split(' ')[0]
+                    print(int(int(coursetime)/2))
+                    respondlist[int(int(coursetime)/2)][col]=courseitem
+        return HttpResponse(json.dumps({'respondlist': respondlist}))
     else:
         print(1)
         return 1

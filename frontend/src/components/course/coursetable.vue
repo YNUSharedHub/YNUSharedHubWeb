@@ -14,6 +14,7 @@
   // } from "../../config/api";
   import Header from '../general/Header'
   import get_url from '../general/getUrl.js'
+  import $ from 'jquery'
 
   export default {
     data() {
@@ -29,23 +30,27 @@
       "v-ClassTable": ClassTable,
       Header
     },
-    beforecreated() {
-      var post_url = get_url(this.$store.state.dev, '/coursetable/')
+    beforeCreate () {
+      var self = this
+      var post_url = get_url(this.$store.state.dev, '/getcoursetable/')
       var post_data = {"id":this.$store.state.userid}
       $.ajax({
-      ContentType: 'application/json; charset=utf-8',
-      dataType: 'json',
-      url: post_url,
-      type: 'POST',
-      data: post_data,
-      success: function (data) {
-        this.classTableData.courses = data
-        console.log(data)
-      },
-      error: function () {
-        alert('获取课表信息失败')
-      }
+        ContentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        url: post_url,
+        type: 'POST',
+        data: post_data,
+        success: function (data) {
+          console.log(data['respondlist'][1])
+          self.classTableData.courses = data['respondlist']
+          
+        },
+        error: function () {
+          alert('获取课表信息失败')
+        }
       })
+
+
       // const {
       //   userId,
       //   userName,

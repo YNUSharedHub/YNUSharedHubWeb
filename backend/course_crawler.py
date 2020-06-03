@@ -18,6 +18,7 @@ import json
 url = 'https://ids.ynu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.ynu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.ynu.edu.cn%2Fnew%2Findex.html'
 username = '20171120028'
 password = 'lrtsqa1314A'
+picpath = 'D:\\code\\python\\django\\YNUSharedHubWeb\\backend\\pic\\'
 class Chaojiying_Client(object):
 
     def __init__(self, username, password, soft_id):
@@ -64,11 +65,11 @@ def course_crawler(url, username, password):
     # chrome_options = Options()
     # chrome_options.add_argument('--headless')
     # chrome_options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(executable_path='D:\只狼\chromedriver.exe')  # 调用带参数的谷歌浏览器
+    driver = webdriver.Chrome(executable_path='D:\\code\\chromedriver.exe')  # 调用带参数的谷歌浏览器
     # driver =webdriver.PhantomJS(executable_path='E:\PhantomJS\phantomjs-1.9.7-windows\phantomjs.exe')
     driver.get(url)
     driver.maximize_window()
-    driver.save_screenshot('E:\\All Codes\\Github\\iCourse-master\\backend\\pic\\1.png')
+    driver.save_screenshot(picpath+'1.png')
     driver.find_element_by_id('username').send_keys(username)
     driver.find_element_by_id('password').send_keys(password)
     captchaimg = driver.find_element_by_id('captchaImg')
@@ -76,11 +77,11 @@ def course_crawler(url, username, password):
     top = captchaimg.location['y']
     elementWidth = captchaimg.location['x'] + captchaimg.size['width']
     elementHeight = captchaimg.location['y'] + captchaimg.size['height']
-    picture = Image.open('E:\\All Codes\\Github\\iCourse-master\\backend\\pic\\1.png')
+    picture = Image.open(picpath+'1.png')
     picture = picture.crop((left, top, elementWidth, elementHeight))
-    picture.save('E:\\All Codes\\Github\\iCourse-master\\backend\\pic\\2.png')
+    picture.save(picpath+'2.png')
     chaojiying = Chaojiying_Client('lrtsqa', 'lrtsqa1314', '905592')
-    im = open('E:\\All Codes\\Github\\iCourse-master\\backend\\pic\\2.png', 'rb').read()  # 本地图片文件路径 来替换 a.jpg 有时WIN系统须要//
+    im = open(picpath+'2.png', 'rb').read()  # 本地图片文件路径 来替换 a.jpg 有时WIN系统须要//
     result = chaojiying.PostPic(im,1902)['pic_str']
     # print(result)
     driver.find_element_by_xpath('//*[@id="captchaResponse"]').send_keys(result)

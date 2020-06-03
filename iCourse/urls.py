@@ -109,6 +109,6 @@ urlpatterns = [
 
     #email verify
     url(r'^active/(?P<active_code>.*)/$', backend_views.ActiveUserView.as_view(), name="user_active"),  # 提取出active后的所有字符赋给active_code
-    url(r'^coursetable/', backend_views.course_table)
+    url(r'^getcoursetable/', backend_views.course_table)
 ]
 
