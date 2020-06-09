@@ -38,7 +38,7 @@
                 学时: {{ hours }}
               </div>
               <div class="text item">
-                课程介绍: {{ intro_info }}
+                上课时间: {{ intro_info }}
               </div>
               <div class="text item">
                 点击: {{ visit_count }}
@@ -46,7 +46,15 @@
             </div>
             <div style="border-top: 1px solid silver;margin-top: 20px;padding-top: 20px;">
               <h1 style="font-weight:500;">成绩分析</h1>
-              <div id="pieReport" ref="pieReport" style="width: 400px;height: 350px;"></div>
+              <div>
+                <el-col :span="17" >
+                  <div id="pieReport" style="width: 550px;height: 400px;"></div>
+                </el-col>
+                <el-col :span="7">
+                  <h2 style="margin-top: 50%; font-size: larger;">课程平均分: {{courseaverage}}</h2>
+                </el-col>
+              </div>
+
             </div>
           </el-card>
             
@@ -227,12 +235,11 @@ import $ from 'jquery'
 import get_url from '../general/getUrl.js'
 import college_map from '../general/collegeMap.js'
 
+// var echarts = require('echarts')
 export default {
   name: 'course_info',
   components: { Header, ResourceDialog },
-  mounted() {
-    this.drawPie();
-  },
+
   beforeCreate () {
     var self = this
     var course_id = this.$route.params.course_id
@@ -249,10 +256,26 @@ export default {
         var college_id = info['college_id']
         var college_info = (college_map.hasOwnProperty(college_id)) ? college_map[college_id] : college_id.toString()
         self.course_name = info['name']
-        self.teacher = undefined
+        self.teacher = info['teacher']
         self.academy = college_info
         self.hours = info['hours']
-        self.intro_info = undefined
+        var coursetime = ''
+        if(info['XQ1'] != null){
+          coursetime += info['XQ1']+' '
+        }
+        if(info['XQ2'] != null){
+          coursetime += info['XQ2']+' '
+        }
+        if(info['XQ3'] != null){
+          coursetime += info['XQ3']+' '
+        }
+        if(info['XQ4'] != null){
+          coursetime += info['XQ4']+' '
+        }
+        if(info['XQ5'] != null){
+          coursetime += info['XQ5']+' '
+        }
+        self.intro_info = coursetime
         self.$store.state.course_code = info['course_code']
       },
       error: function () {
@@ -301,10 +324,15 @@ export default {
   data () {
     return {
       charts: "",
-      opinion: ["及格人数", "未及格人数"],
+      studentnum:10,
+      courseaverage:80,
+      opinion: ["60分以下", "60~70分","70~80分","80~90分","90分以上"],
       opinionData: [
-        { value: 12, name: "及格人数", itemStyle: "#1ab394" },
-        { value: 18, name: "未及格人数", itemStyle: "#79d2c0" }
+        { value: 12, name: "60分以下"},
+        { value: 18, name: "60~70分"},
+        { value: 12, name: "70~80分" },
+        { value: 12, name: "80~90分"},
+        { value: 12, name: "90分以上"},
       ],
       course_id: this.$route.params.course_id,
       like_count: 0,
@@ -346,9 +374,31 @@ export default {
   },
   methods: {
     drawPie: function() {
-      // let charts = echarts.init(document.getElementById("pieReport"));
-      this.charts =  echarts.init(this.$refs.pieReport)
-      this.charts.setOption({
+      var mycharts = echarts.init(document.getElementById("pieReport"));
+      // this.charts =  echarts.init(this.$refs.pieReport)
+      mycharts.setOption({
+        title: {
+            text: '课程学生成绩分布',
+            subtext: '数据样本总量：'+this.studentnum,
+            // x 设置水平安放位置，默认左对齐，可选值：'center' ¦ 'left' ¦ 'right' ¦ {number}（x坐标，单位px）
+            x: 'center',
+            // y 设置垂直安放位置，默认全图顶端，可选值：'top' ¦ 'bottom' ¦ 'center' ¦ {number}（y坐标，单位px）
+            y: 'top',
+            // itemGap设置主副标题纵向间隔，单位px，默认为10，
+            // itemGap: 30,
+            // backgroundColor: '#EEE',
+            // 主标题文本样式设置
+            textStyle: {
+              fontSize: 20,
+              fontWeight: 'bolder',
+              // color: '#000080'
+            },
+            // 副标题文本样式设置
+            subtextStyle: {
+              fontSize: 12,
+              color: 'grey'
+            }
+          },
         tooltip: {
           trigger: "item",
           formatter: "{a}<br/>{b}:{c} ({d}%)"
@@ -360,9 +410,9 @@ export default {
         },
         series: [
           {
-            name: "状态",
+            name: "成绩分布",
             type: "pie",
-            radius: "65%",
+            radius: "60%",
             center: ["50%", "50%"],
             avoidLabelOverlap: false,
             itemStyle: {
@@ -373,11 +423,20 @@ export default {
               },
               color: function(params) {
                 //自定义颜色
-                var colorList = ["#1ab394", "#79d2c0"];
+                var colorList = ["rgb(46, 57, 58)", "#79d2c0", "rgb(28, 147, 168)", "rgb(179, 91, 119)","crimson"];
                 return colorList[params.dataIndex];
               }
             },
-            data: this.opinionData
+            data: this.opinionData,
+            label: {
+              normal: {
+                // position: 'inner',  // 设置标签位置，默认在饼状图外 可选值：'outer' ¦ 'inner（饼状图上）'
+                // formatter: '{a} {b} : {c}个 ({d}%)'   设置标签显示内容 ，默认显示{b}
+                // {a}指series.name  {b}指series.data的name
+                // {c}指series.data的value  {d}%指这一部分占总数的百分比
+                formatter: '{b}: {c} ({d}%)'
+              }
+            }
           }
         ]
       });
@@ -529,6 +588,7 @@ export default {
     }
   },
   mounted () {
+    this.drawPie();
     var course_id = this.$route.params.course_id
 
     // latest resource

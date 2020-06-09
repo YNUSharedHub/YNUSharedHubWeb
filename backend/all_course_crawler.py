@@ -27,10 +27,11 @@ url = 'https://ids.ynu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.ynu.ed
 
 
 def course_crawler(url, username, password):
-    driver = webdriver.Chrome(executable_path='D:\只狼\chromedriver.exe')
+    driver = webdriver.Chrome(executable_path='D:\\code\\chromedriver.exe')
     driver.get(url)
     driver.find_element_by_id('username').send_keys(username)
     driver.find_element_by_id('password').send_keys(password)
+    time.sleep(5)
     driver.find_element_by_tag_name('button').click()
     locator = (By.XPATH, '//*[@id="ampPersonalAsideLeftMini"]/div/div[2]')
     WebDriverWait(driver, 20, 0.5).until(EC.presence_of_element_located(locator))

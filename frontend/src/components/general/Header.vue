@@ -519,6 +519,7 @@ export default {
   .container {
     height: 60px;
     width: auto;
+    color:rgb(46, 57, 58);
   }
   .logo{
     height: 60px;

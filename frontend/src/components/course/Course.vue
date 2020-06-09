@@ -21,9 +21,9 @@
                                   <el-form-item>
                                     <el-button type="primary" v-on:click="search_course_clicked" icon="search">搜索</el-button>
                                   </el-form-item>
-                                  <el-form-item>
+                                  <!-- <el-form-item>
                                     <el-button type="primary" @click="add_course_clicked" icon="plus" style="float:left;" disabled=true>添加课程
-                                    </el-button>
+                                    </el-button> -->
                                   </el-form-item>
                                 </el-form>
                               </el-col>
@@ -35,7 +35,7 @@
                               <el-table-column prop="course_id" label="课程编号"  sortable align="center"></el-table-column>
                               <el-table-column prop="course_name" label="课程名"  sortable align="center"></el-table-column>
                               <el-table-column prop="course_academy" label="开设学院"  sortable align="center"></el-table-column>
-                              <el-table-column prop="course_class" label="课程分类"  sortable align="center"></el-table-column>
+                              <el-table-column prop="course_class" label="授课教师"  sortable align="center"></el-table-column>
                               <!--
                               <el-table-column prop="course_hours" label="学时"  sortable></el-table-column>
                             --><el-table-column prop="course_credit" label="学分"  sortable align="center"></el-table-column>
@@ -93,40 +93,38 @@ export default {
       },
       {
         label: '开设院系',
-        children: [{ label: '材料科学与工程学院' },
-                   { label: '电子信息工程学院' },
-                   { label: '自动化科学与电气工程学院' },
-                   { label: '能源与动力工程学院' },
-                   { label: '航空科学与工程学院' },
-                   { label: '计算机学院' },
-                   { label: '机械工程及自动化学院' },
-                   { label: '经济管理学院' },
-                   { label: '数学与系统科学学院' },
-                   { label: '生物与医学工程学院' },
-                   { label: '人文社会科学学院' },
+        children: [{ label: '经济学院' },
                    { label: '外国语学院' },
-                   { label: '交通科学与工程学院' },
-                   { label: '可靠性与系统工程学院' },
-                   { label: '宇航学院' },
-                   { label: '飞行学院' },
-                   { label: '仪器科学与光电工程学院' },
-                   { label: '物理科学与核能工程学院' },
-                   { label: '法学院' },
+                   { label: '物理与天文学院' },
                    { label: '软件学院' },
-                   { label: '高等工程学院' },
-                   { label: '高等工程学院' },
-                   { label: '中法工程师学院' },
-                   { label: '新媒体艺术与设计学院' },
-                   { label: '化学与环境学院' },
-                   { label: '思想政治理论学院' },
-                   { label: '人文与社会科学高等研究' },
-                   { label: '30系' },
-                   { label: '32系' },
-                   { label: '33系' },
-                   { label: '51系' },
-                   { label: '52系' },
-                   { label: '56系' },
-                   { label: '91系' }
+                   { label: '职业与继续教育学院' },
+                   { label: '历史与档案学院' },
+                   { label: '公共管理学院' },
+                   { label: '工商管理与旅游管理学院' },
+                   { label: '化学科学与工程学院' },
+                   { label: '资源环境与地球科学学院' },
+                   { label: '体育学院' },
+                   { label: '马克思主义学院' },
+                   { label: '新闻学院' },
+                   { label: '民族学与社会学学院' },
+                   { label: '艺术与设计学院' },
+                   { label: '生命科学学院' },
+                   { label: '建筑与规划学院' },
+                   { label: '医学院' },
+                   { label: '生态与环境学院' },
+                   { label: '文学院' },
+                   { label: '法学院' },
+                   { label: '数学与统计学院' },
+                   { label: '信息学院'},
+                   { label: '国际学院' },
+                   { label: '农学院' },
+                   { label: '材料与能源学院' },
+                   { label: '昌新国际艺术学院' },
+                   { label: '大学外语教学部' },
+                   { label: '地球科学学院' },
+                   { label: '政府管理学院' },
+                   { label: '汉语国际教育学院' },
+                   { label: '资源植物研究院' }
         ]
       }],
       filters: {
@@ -194,7 +192,7 @@ export default {
                   'course_academy': college_info,
                   'course_hours': info_list[i]['hours'],
                   'course_credit': info_list[i]['credit'],
-                  'course_class': self.course_class_dict[info_list[i]['class_id'] - 1]
+                  'course_class': info_list[i]['teacher']
                 }
                 self.storage.push(item)
               }
@@ -296,7 +294,7 @@ export default {
                 'course_academy': college_info,
                 'course_hours': course['hours'],
                 'course_credit': course['credit'],
-                'course_class': course['class_id']
+                'course_class': course['teacher']
               })
             }
           },
@@ -333,7 +331,7 @@ export default {
               'course_academy': college_info,
               'course_hours': info_list[i]['hours'],
               'course_credit': info_list[i]['credit'],
-              'course_class': self.course_class_dict[info_list[i]['class_id'] - 1]
+              'course_class': info_list[i]['teacher']
             }
             self.storage.push(item)
           }
