@@ -7,6 +7,9 @@ import Vuex from 'vuex'
 import store from './vuex/store'
 import router from './router'
 import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 
 // Vue.use(axios)
 Vue.use(ElementUI)
