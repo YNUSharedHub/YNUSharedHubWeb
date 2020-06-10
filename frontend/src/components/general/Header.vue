@@ -355,6 +355,7 @@ export default {
               self.$store.state.user_name = ''
               self.$store.state.is_ynu = false
               self.$store.state.userid = null
+              // this.$router.push({ path: '/index' })
               location.reload()
               break
             case 301:

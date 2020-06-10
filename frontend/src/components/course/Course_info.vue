@@ -47,7 +47,7 @@
             <div style="border-top: 1px solid silver;margin-top: 20px;padding-top: 20px;">
               <h1 style="font-weight:500;">成绩分析</h1>
               <div>
-                <el-col :span="17" >
+                <el-col :span="16">
                   <div id="pieReport" style="width: 550px;height: 400px;"></div>
                 </el-col>
                 <el-col :span="7">
@@ -588,8 +588,28 @@ export default {
     }
   },
   mounted () {
-    this.drawPie();
     var course_id = this.$route.params.course_id
+    var self = this
+    var post_url = get_url(this.$store.state.dev, '/coursescore/')
+    var post_data = {'courseid':course_id}
+    $.ajax({
+      ContentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      url: post_url,
+      type: 'POST',
+      data: post_data,
+      async: false,
+      success: function (data) {
+        self.opinionData= data['studentscore']
+        self.studentnum= data['studentnum']
+        self.courseaverage= data['courseaverage']
+      },
+      error: function () {
+        alert('连接服务器异常')
+      }
+    })
+    this.drawPie();
+    
 
     // latest resource
     var post_data = { 'course_id': course_id, 'number': this.total_resource_line }
