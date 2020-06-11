@@ -2,12 +2,12 @@
 	<footer id="Footer" class="footer">	
 		<div align="center"><hr class="line"></div>
 		<div class="footer-main">
-			<p class="footer_copyright"> © 2017 hotcode5</p>
+			<p class="footer_copyright"> © 2020 YNUCourseHub</p>
 			<p class="footer_link_container">
-				<a href="https://github.com/Slontia/iCourse/" target="_blank" class="footer_link">Github</a>
-				<a href="http://www.cnblogs.com/hotcode5/" target="_blank" class="footer_link">blog</a>
+				<a href="https://github.com/YNUSharedHub/YNUSharePlatform.git" target="_blank" class="footer_link">Go to our Github</a>
 			</p>
-			<p class="footer_qq">QQ群: 639199158</p>
+			<p class="footer_qq">如果你认为本网站的一些文件侵犯了您的权益，请向我们发送邮件。我们将会彻底清除这些文件。<br/>
+				2756699419@qq.com</p>
 		</div>
 		</div>
 	</footer>

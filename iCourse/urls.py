@@ -68,9 +68,9 @@ urlpatterns = [
     # page
     url(r'^$', TemplateView.as_view(template_name='index.html')), # NEW
     url(r'^index/$', backend_views.home, name='index'),
-    url(r'^course/$', backend_views.course, name='course'),
-    url(r'^resource/$', backend_views.course, name='course'),
-    url(r'^contact/$', backend_views.contact, name='contact'), 
+    # url(r'^course/$', backend_views.course, name='course'),
+    # url(r'^resource/$', backend_views.course, name='course'),
+    # url(r'^contact/$', backend_views.contact, name='contact'), 
     url(r'^admin/', admin.site.urls),
     url(r'^user/home/.*/$', backend_views.home),
     url(r'^course/page/.*/$', backend_views.home),
