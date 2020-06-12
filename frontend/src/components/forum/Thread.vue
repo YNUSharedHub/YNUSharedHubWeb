@@ -10,7 +10,7 @@
     <el-row>
       <el-col :span="24">
         <p class="title">
-          {{ course_name }}-讨论版
+          {{ course_name }}-讨论区
         </p>
       </el-col>
     </el-row>
@@ -760,7 +760,7 @@ export default {
   }
   .title{
     text-align: center;
-    font-size: 40px;
+    font-size: 32px;
     padding-bottom: 30px;
   }
   .main_container{

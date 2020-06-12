@@ -10,7 +10,7 @@
     <el-row>
       <el-col :span="24">
         <p class="title">
-          {{ course_name }}-讨论版
+          {{ course_name }}-讨论区
         </p>
       </el-col>
     </el-row>
@@ -35,48 +35,52 @@
     </el-row>
     <template v-for="thread in current_threads">
       <el-row type="flex" justify="center" class="thread_container">
-        <el-col :span="4">
-          <el-row>
-            <el-col :span="8">
-              <p class="thread_info_num" style="color:#58B7FF">{{ thread.agree_num }}</p>
-            </el-col>
-            <el-col :span="8">
-              <p class="thread_info_num" style="color:rgb(80,80,80)">{{ thread.follow_num }}</p>
-            </el-col>
-            <el-col :span="8">
-              <p class="thread_info_num" style="color:grey">{{ thread.read_num }}</p>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <p class="thread_info_term" style="color:#58B7FF">赞同</p>
-            </el-col>
-            <el-col :span="8">
-              <p class="thread_info_term" style="color:rgb(80,80,80)">跟帖</p>
-            </el-col>
-            <el-col :span="8">
-              <p class="thread_info_term" style="color:grey">浏览</p>
-            </el-col>
-          </el-row>
-        </el-col>
-        <el-col :span="14" :offset="1">
-          <el-row style="padding-bottom: 10px;">
-            <el-button type="text" class="title_button" @click="enter_thread_button_clicked(thread.id)">
-            <p style="">
-              <span style="">{{ thread.type }} ·</span>
-              <span style="">{{ thread.title }}</span>
-            </p>
-          </el-button>
-          </el-row>
-          <el-row style="padding-bottom: 10px;">
-            <p class="thread_description"> {{ thread.description }} </p>
-          </el-row>
-          <el-row>
-            <p style="float: right;color:grey"> {{ thread.user_name }} 最后编辑于 {{ thread.time }}</p>
-          </el-row>
+        <el-col :span="20">
+          <el-card class="box-card">
+            <div slot="header" class="clearfix">
+              <el-col :span="18">
+                <el-button type="text" class="title_button" @click="enter_thread_button_clicked(thread.id)">
+                  <p>
+                    <span>{{ thread.type }} ·</span>
+                    <span>{{ thread.title }}</span>
+                  </p>
+                </el-button>
+              </el-col>
+              <el-col :span="6" class="textinfo">
+                <el-col :span="4">
+                  <p class="thread_info_term" style="color:#58B7FF">赞同</p>
+                </el-col>
+                <el-col :span="4">
+                  <p class="thread_info_num" style="color:#58B7FF">{{ thread.agree_num }}</p>
+                </el-col>
+                <el-col :span="4">
+                  <p class="thread_info_term" style="color:rgb(80,80,80)">跟帖</p>
+                </el-col>
+                <el-col :span="4">
+                  <p class="thread_info_num" style="color:rgb(80,80,80)">{{ thread.follow_num }}</p>
+                </el-col>
+                <el-col :span="4">
+                  <p class="thread_info_term" style="color:grey">浏览</p>
+                </el-col>
+                <el-col :span="4">
+                  <p class="thread_info_num" style="color:grey">{{ thread.read_num }}</p>
+                </el-col>
+              </el-col>
+            </div>
+
+            <div>
+              <p class="thread_description"> {{ thread.description }} </p>
+            </div>
+            <el-row>
+              <p style="float: right;color:grey"> {{ thread.user_name }} 最后编辑于 {{ thread.time }}</p>
+            </el-row>
+          </el-card>
+          
         </el-col>
       </el-row>
-      <center><hr width="80%"/></center>
+      <center>
+        <hr width="80%" style="margin-top: 20px; border: none;border-top: 1px solid rgb(241,242,244)" />
+      </center>
     </template>
     <el-row type="flex" justify="center">
       <el-col :span="18">
@@ -263,35 +267,51 @@ export default {
 </script>
 
 <style type="text/css" scoped>
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+
+  .clearfix:after {
+    clear: both
+  }
+ .thread_container {
+    margin-top: 30px;
+    height: auto;
+  }
   .container{
     font-family: Microsoft Yahei;
   }
   .title{
     text-align: center;
-    font-size: 40px;
+    font-size: 32px;
     padding-bottom: 30px;
   }
   .button_group_static{
     text-align: center;
   }
-  .thread_info_num{
-    text-align: center;
-    font-size: 24px;
+
+  .thread_info_num {
+    text-align: left;
+    font-size: 18px;
     padding-bottom: 10px;
-    padding-top: 0px;
+    padding-top: 10px;
     margin-top: 0px;
   }
-  .thread_info_term{
+
+  .thread_info_term {
     text-align: center;
-    font-size: 24px;
+    font-size: 18px;
+    padding-top: 10px;
   }
-  .title_button{
+  .title_button {
     padding: 0px 0px 0px 0px;
-    margin: 4px 0px 0px 4px;
-    color:black;
+    margin: 10px 0px 0px 4px;
+    color: black;
     font-size: 24px;
     word-wrap: break-word;
-    word-break:break-all;
+    word-break: break-all;
     white-space: pre-wrap;
   }
   .title_button:hover{

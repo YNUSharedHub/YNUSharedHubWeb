@@ -18,7 +18,7 @@
                 <el-col :span="24">
                   <el-card class="box-card">
                     <div slot="header" class="clearfix">
-                      <el-col :span="4">
+                      <el-col :span="9">
                         <el-button type="text" class="title_button" @click="enter_thread_button_clicked(thread.id)">
                           <p>
                             <span>{{ thread.type }} ·</span>
@@ -34,7 +34,7 @@
                           </el-col>
                         </el-button>
                       </el-col>
-                      <el-col :span="10" class="textinfo">
+                      <el-col :span="6" class="textinfo">
                         <el-col :span="4">
                           <p class="thread_info_term" style="color:#58B7FF">赞同</p>
                         </el-col>
@@ -59,6 +59,9 @@
                     <div>
                       <p class="thread_description"> {{ thread.description }} </p>
                     </div>
+                    <el-row>
+                      <p style="float: right;color:grey"> {{ thread.user_name }} 最后编辑于 {{ thread.time }}</p>
+                    </el-row>
                   </el-card>
                 </el-col>
               </el-row>
@@ -74,7 +77,7 @@
                 <el-col :span="24">
                   <el-card class="box-card">
                     <div slot="header" class="clearfix">
-                      <el-col :span="4">
+                      <el-col :span="9">
                         <el-button type="text" class="title_button" @click="enter_thread_button_clicked(thread.id)">
                           <p>
                             <span>{{ thread.type }} ·</span>
@@ -90,7 +93,7 @@
                           </el-col>
                         </el-button>
                       </el-col>
-                      <el-col :span="10" class="textinfo">
+                      <el-col :span="6" class="textinfo">
                         <el-col :span="4">
                           <p class="thread_info_term" style="color:#58B7FF">赞同</p>
                         </el-col>
@@ -115,6 +118,9 @@
                     <div>
                       <p class="thread_description"> {{ thread.description }} </p>
                     </div>
+                    <el-row>
+                      <p style="float: right;color:grey"> {{ thread.user_name }} 最后编辑于 {{ thread.time }}</p>
+                    </el-row>
                   </el-card>
                 </el-col>
               </el-row>
@@ -486,7 +492,8 @@
                       title: info_list[i].title,
                       description: cut_description,
                       course_name: info_list[i].course_name,
-                      course_id: info_list[i].course_id
+                      course_id: info_list[i].course_id,
+                      time: info_list[i].update_time
                     }
                     _this.hot_threads.push(thread)
                   }
@@ -555,7 +562,8 @@
                       title: info_list[i].title,
                       description: cut_description,
                       course_name: info_list[i].course_name,
-                      course_id: info_list[i].course_id
+                      course_id: info_list[i].course_id,
+                      time: info_list[i].update_time
                     }
                     _this.new_threads.push(thread)
                   }
