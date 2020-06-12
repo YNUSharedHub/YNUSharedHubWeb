@@ -50,6 +50,17 @@ class Resource(models.Model):
         return str(self.id)
 
 
+class GPA(models.Model):
+    gpa = models.CharField(max_length=100, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course_numbers = models.CharField(max_length=100, null=True, blank=True)
+
+class Grades(models.Model):
+    grade = models.CharField(max_length=10, null=True, blank=True)
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+
+
 # Teacher Model
 class Teacher(models.Model):
     name = models.CharField(max_length=20)

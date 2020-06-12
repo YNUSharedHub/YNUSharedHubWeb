@@ -97,8 +97,12 @@ urlpatterns = [
     url(r'^user/modify/info/$',backend_views.user_modify_info,name='user_modify_info'),
     # notifications
     url(r'^notifications/', include(notifications.urls, namespace='notifications')),
-    url(r'studentnotifications/',backend_views.verify_studentid),
+
+    url(r'^studentnotifications/',backend_views.verify_studentid),
+
+    # url(r'studentnotifications/',backend_views.verify_studentid),
     
+
     # home
     url(r'^post/hot/idlist/$', backend_views.post_id_list_by_click_count),
     url(r'^post/latest/idlist/$', backend_views.post_id_list_by_update_time),
@@ -109,6 +113,8 @@ urlpatterns = [
 
     #email verify
     url(r'^active/(?P<active_code>.*)/$', backend_views.ActiveUserView.as_view(), name="user_active"),  # 提取出active后的所有字符赋给active_code
-    url(r'^getcoursetable/', backend_views.course_table)
+    url(r'^getcoursetable/', backend_views.course_table),
+    url(r'^score/',backend_views.get_user_grades),
+    url(r'^coursescore/',backend_views.get_coursegrades)
 ]
 

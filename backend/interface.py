@@ -137,7 +137,7 @@ def user_information_by_id(user_id):
     result = User.objects.filter(id=user_id)
     if (len(result) == 0):
         return {}
-    result = result.values('username', 'email', "is_superuser","is_ynu","studentid")[0]
+    result = result.values('username', 'email', "is_superuser")[0]
     return result
 
 

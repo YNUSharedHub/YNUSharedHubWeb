@@ -16,6 +16,7 @@ from django.shortcuts import render
 from .email_send import *
 from .course_crawler import *
 from .verify_student import *
+from .grades_crawler import *
 import requests
 import urllib.request
 import json
@@ -30,7 +31,7 @@ from django.utils.http import urlquote
 from backend import notification
 
 url = 'https://ids.ynu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.ynu.edu.cn%2Flogin%3Fservice%3Dhttp%3A%2F%2Fehall.ynu.edu.cn%2Fnew%2Findex.html'
-
+path = 'D:\\只狼\\chromedriver.exe'
 
 def page404(request):
     return
@@ -2140,7 +2141,7 @@ def course_table(request):
             course_list = course_crawler(url, username, password)
             for course in course_list:
                 try:
-                    one_course = Course.objects.filter(name=course['KCM'], teacher=course['SKJS']).first()
+                    one_course = Course.objects.filter(name=course['KCM'], course_code=course['KCID']).first()
                     user = User.objects.get(id=data.get('id'))
                     one_course.student.add(user)
                     user_course = User.objects.get(id=data.get('id')).course_set.all()
@@ -2316,10 +2317,13 @@ def json_field(field_data):
 @csrf_exempt
 def verify_studentid(request):
     if request.method == "POST":
-        # data = json.loads(request.body)
+
         data = json.dumps(request.POST)  # new
         data = json.loads(data)
         print(data)
+
+
+
         student_id = data['username']
         student_password = data['password']
         result_bool = verify_student(student_id,student_password)
@@ -2332,3 +2336,116 @@ def verify_studentid(request):
             return HttpResponse(json.dumps({'result':True}))
         else:
             return HttpResponse(json.dumps({'result':False}))
+
+
+#/score
+@csrf_exempt
+def get_user_grades(request):
+    if request.method == "POST":
+        data = json.dumps(request.POST)  # new
+        data = json.loads(data)
+        print(data)
+        user_id = data['userid']
+        user = UserProfile.objects.get(user_id=user_id)
+        all_course = Grades.objects.filter(user_id=str(user_id))
+        course_grades = []
+        if  all_course:
+            for course in all_course:
+                all_courses_scores = {}
+                course_name = Course.objects.filter(id = course.course_id)[0].name
+                course_grade = course.grade
+                all_courses_scores['course_name'] = course_name
+                all_courses_scores['course_grades'] = course_grade
+                course_grades.append(all_courses_scores)
+                all_gpa = GPA.objects.filter(user_id=user_id)[0].gpa
+                courses_nums = eval(GPA.objects.filter(user_id=user_id)[0].course_numbers)
+                gpas = eval(all_gpa)
+                print(gpas)
+                all_results = {'gpa': gpas,
+                               'studentscore': [{'value': courses_nums[4], 'name': "60分以下"},
+                                                {'value': courses_nums[3], 'name': "60~70分"},
+                                                {'value': courses_nums[2], 'name': "70~80分"},
+                                                {'value': courses_nums[1], 'name': "80~90分"},
+                                                {'value': courses_nums[0], 'name': "90分以上"},
+                                                ],
+                               'coursenum': len(course_grades),
+                               }
+            return HttpResponse(json.dumps(all_results))
+        else:
+            test = TestYnutest('D:\\只狼\\chromedriver.exe', user.studentid,user.studentpassword)
+            all_information = test.test_ynutest()
+            print(all_information)
+            all_courses_scores = all_information['coursescores']
+            all_gpa = all_information['gpa_content'] # GPA
+            all_course_num = all_information['num_content']
+            gpas = [None for _ in range(7)]
+            courses_nums = [None for _ in range(5)]
+            for index,gpa in enumerate(all_gpa):
+                gpas[index] = gpa['GPA']
+            for index,course_num in enumerate(all_course_num):
+                if course_num['DJSL'] is not None:
+                    courses_nums[index] = course_num['DJSL']
+                else:
+                    index+=1
+            GPA.objects.create(gpa=str(gpas),user_id=user_id,course_numbers=str(courses_nums))
+            all_results = {'gpa': gpas,
+        'studentscore':[{'value': courses_nums[0],'name': "60分以下"},
+          {'value': courses_nums[1],'name': "60~70分"},
+          {'value': courses_nums[2],'name': "70~80分"},
+          {'value': courses_nums[3],'name': "80~90分"},
+          {'value': courses_nums[4],'name': "90分以上"},
+        ],
+        'coursenum':len(all_courses_scores),
+        }
+            result = {}
+            for course in all_courses_scores:
+                if Course.objects.filter(name=course['KCM']):
+                    Grades.objects.create(grade=course['ZCJ'],
+                                          course_id=Course.objects.filter(name=course['KCM']).first().id,
+                                          user_id = user_id)
+                    course_name = course['KCM']
+                    course_grade = course['ZCJ']
+                    result['course_name'] = course_name
+                    result['course_grades'] = course_grade
+                    course_grades.append(result)
+                else:
+                    # print(1)
+                    continue
+            return HttpResponse(json.dumps(all_results))
+
+
+#/coursescore
+@csrf_exempt
+def get_coursegrades(request):
+    if request.method == "POST":
+        data = json.dumps(request.POST)  # new
+        data = json.loads(data)
+        print(data)
+        course_id = data['courseid']
+        all_grades = Grades.objects.filter(course_id=course_id)
+        add_grade = 0
+        grade1,grade2,grade3,grade4,grade5 = 0,0,0,0,0
+        for grade in all_grades:
+            if float(grade.grade)<60:
+                grade1+=1
+            elif float(grade.grade)>=60 and float(grade.grade)<70:
+                grade2+=1
+            elif float(grade.grade)>=70 and float(grade.grade)<80:
+                grade3+=1
+            elif float(grade.grade)>=80 and float(grade.grade)<90:
+                grade4+=1
+            if float(grade.grade)>=90:
+                grade5+=1
+            add_grade+=float(grade.grade)
+        try:
+            average_grade =add_grade/len(all_grades)
+        except:
+            average_grade = 0
+        studentscore=[{'value': grade1,'name': "60分以下"},
+          {'value': grade2,'name': "60~70分"},
+          {'value': grade3,'name': "70~80分"},
+          {'value': grade4,'name': "80~90分"},
+          {'value': grade5,'name': "90分以上"},
+        ]
+        result = {'studentscore':studentscore,'studentnum':len(all_grades),'courseaverage':average_grade}
+        return HttpResponse(json.dumps(result))

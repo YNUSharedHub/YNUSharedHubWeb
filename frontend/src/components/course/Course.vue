@@ -324,7 +324,7 @@ export default {
           self.total = info_list.length
           for (var i = 0; i < info_list.length; i++) {
             var college_id = info_list[i]['college_id']
-            var college_info = (college_map.hasOwnProperty(college_id)) ? college_map[college_id] : college_id.toString()
+            var college_info = (college_map.hasOwnProperty(college_id)) ? college_map[college_id] : String(college_id)
             var item = {
               'course_name': info_list[i]['name'],
               'course_id': info_list[i]['id'],

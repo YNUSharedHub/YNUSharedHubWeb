@@ -30,6 +30,7 @@
   export default {
     data() {
       return {
+        gpalist:null,
         coursenum: 10,
         opinion: ["60分以下", "60~70分", "70~80分", "80~90分", "90分以上"],
         opinionData: [{
@@ -55,7 +56,41 @@
         ],
         seven_chart: null,
         month_chart: null,
-        seven_option: {
+        
+      }
+    },
+    components: {
+      Header
+    },
+    mounted() {
+      var self = this
+      var post_url = get_url(this.$store.state.dev, '/score/')
+      var post_data = {'userid':this.$store.state.userid}
+      $.ajax({
+        ContentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        url: post_url,
+        type: 'POST',
+        data: post_data,
+        async: false,
+        success: function (data) {
+          self.gpalist = data['gpa']
+          self.opinionData= data['studentscore']
+          self.coursenum= data['coursenum']
+        },
+        error: function () {
+          alert('连接服务器异常')
+        }
+      })
+      this.drawPie();
+      this.get_echarts();
+    },
+    methods: {
+      get_echarts: function () {
+        this.seven_chart = echarts.init(document.getElementById("seven"));
+        // 把配置和数据放这里
+        this.seven_chart.setOption(
+        {
           title: {
             text: 'GPA变化',
             x: 'left',
@@ -95,7 +130,7 @@
           series: [{
               name: 'GPA',
               type: 'line',
-              data: [1, 1.5, 2, 2.7, 3.4, 3.5, 4],
+              data: this.gpalist,
               lineStyle: { //设置折线色颜色
                 color: '#3f89ec'
               },
@@ -108,40 +143,8 @@
 
 
           ],
-        },
-      }
-    },
-    components: {
-      Header
-    },
-    mounted() {
-      var self = this
-      var post_url = get_url(this.$store.state.dev, '/score/')
-      var post_data = {'userid':this.$store.state.userid}
-      $.ajax({
-        ContentType: 'application/json; charset=utf-8',
-        dataType: 'json',
-        url: post_url,
-        type: 'POST',
-        data: post_data,
-        async: false,
-        success: function (data) {
-          self.seven_option['series']['data'] = data['gpa']
-          self.opinionData= data['studentscore']
-          self.coursenum= data['coursenum']
-        },
-        error: function () {
-          alert('连接服务器异常')
         }
-      })
-      this.drawPie();
-      this.get_echarts();
-    },
-    methods: {
-      get_echarts: function () {
-        this.seven_chart = echarts.init(document.getElementById("seven"));
-        // 把配置和数据放这里
-        this.seven_chart.setOption(this.seven_option)
+        )
       },
       drawPie: function () {
         var mycharts = echarts.init(document.getElementById("pieReport"));

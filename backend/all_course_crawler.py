@@ -27,7 +27,7 @@ url = 'https://ids.ynu.edu.cn/authserver/login?service=http%3A%2F%2Fehall.ynu.ed
 
 
 def course_crawler(url, username, password):
-    driver = webdriver.Chrome(executable_path='D:\\code\\chromedriver.exe')
+    driver = webdriver.Chrome(executable_path='D:\\只狼\\chromedriver.exe')
     driver.get(url)
     driver.find_element_by_id('username').send_keys(username)
     driver.find_element_by_id('password').send_keys(password)
@@ -78,8 +78,8 @@ def course_crawler(url, username, password):
             try:
                 college_id = College.objects.get(name=result['KKDWDM_DISPLAY']).id
                 course = {'name': result['KCM'], 'lessonsAddress': result['SKDD'], 'teacher': result['JSJS'],
-                          'college_id':college_id,'credit':float(result['XF']),'elective':0 if result['KCXZDM_DISPLAY']=='必修' else 0,
-                          'course_code':result['ZYDM'].split(',')[0].split('-')[0],'visit_count':0,'XQ1': result['XQ1'], 'XQ2': result['XQ2'], 'XQ3': result['XQ3'], 'XQ4': result['XQ4'],
+                          'college_id':college_id,'credit':float(result['XF']),'elective':1 if result['KCXZDM_DISPLAY']=='必修' else 0,
+                          'course_code':result['JXBID'],'visit_count':0,'XQ1': result['XQ1'], 'XQ2': result['XQ2'], 'XQ3': result['XQ3'], 'XQ4': result['XQ4'],
             'XQ5': result['XQ5']
                           }
                 all_course.append(course)
