@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     user_name: '',
     is_login: false,
     is_ynu: false,
+    headimg:require('../components/unload.png'),
     // state relating to debug
     dev: true
   },

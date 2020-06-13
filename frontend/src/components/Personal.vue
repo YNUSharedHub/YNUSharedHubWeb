@@ -19,8 +19,16 @@
 
     <el-col :span="14" style="margin:30px 0px 0px 0px;">
       <el-row>
-        <el-col :span="6" :offset="1">
-          <div id="headPortrait"><img :src="headPortrait" style="height:200px;"></img></div>
+        <el-col :span="7" :offset="1">
+          <!-- <div id="headPortrait"><img :src="headPortrait" style="height:200px;"></img></div> -->
+          <div class="hello">
+            <div class="user-header">
+              <input type="file" name="image" accept="image/*" @change='onchangeImgFun'
+               class="header-upload-btn user-header-com" style="width: 280px;height: 280px;display: inline-block;">
+              <img  alt="" :src='imgStr' class="user-header-img user-header-com" style="width: 280px;height: 280px;display: inline-block;">
+              <p class="tip">图片限制5MB <span class="error">{{errorStr}}</span></p>
+            </div>
+          </div>
         </el-col>
         <el-col :span="14" :offset="2">
           <el-row style="margin:10px 0px 20px 0px;">
@@ -192,6 +200,8 @@
       }
 
       return {
+        imgStr: this.$store.state.headimg,
+        errorStr: '',
         email: '',
         is_superuser: false,
         is_host: false,
@@ -388,6 +398,39 @@
       }
     },
     methods: {
+      onchangeImgFun (e) {
+        var file = e.target.files[0]
+        console.log(file)
+        // 获取图片的大小，做大小限制有用
+        let imgSize = file.size
+        console.log(imgSize)
+        var _this = this // this指向问题，所以在外面先定义
+        // 比如上传头像限制5M大小，这里获取的大小单位是b
+        if (imgSize <= 50 *1024* 1024) {
+          // 合格
+          _this.errorStr = ''
+          console.log('大小合适')
+          // 开始渲染选择的图片
+          // 本地路径方法 1
+          // this.imgStr = window.URL.createObjectURL(e.target.files[0])
+          // console.log(window.URL.createObjectURL(e.target.files[0])) // 获取当前文件的信息
+
+          // base64方法 2
+          var reader = new FileReader()
+          reader.readAsDataURL(file) // 读出 base64
+          reader.onloadend = function () {
+            // 图片的 base64 格式, 可以直接当成 img 的 src 属性值
+            var dataURL = reader.result
+            _this.$store.state.headimg = dataURL
+            console.log(dataURL)
+            _this.imgStr = dataURL
+            // 下面逻辑处理
+          }
+        } else {
+          console.log('大小不合适')
+          _this.errorStr = '图片大小超出范围'
+        }
+      },
       email_check: function () {
         var post_url = get_url(this.$store.state.dev, '/sign/emailcheck/')
         var _this = this
@@ -601,6 +644,26 @@
 </script>
 
 <style scpoed>
+  .user-header{
+    position: relative;
+    display: inline-block;
+  }
+  /* .user-header-com{ */
+    /* width: 200px;
+    height: 200px; */
+    /* display: inline-block; */
+  /* } */
+  .header-upload-btn{
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    /* 通过定位把input放在img标签上面，通过不透明度隐藏 */
+  }
+  .tip{
+    font-size: 14px;
+    color: #666;
+  }
   .header {
     height: 60px;
     line-height: 60px;

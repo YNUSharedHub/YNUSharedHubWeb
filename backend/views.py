@@ -1,4 +1,6 @@
 # Create your views here.
+import decimal
+
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from numpy import unicode
 
@@ -489,27 +491,35 @@ def course_query(request):
         # data = json.loads(request.body.decode())
         query = str(data.get('keyword'))
         # print ('query: ' + query)
-        cs_url = 'http://localhost:8080/solr/mynode/select?'  # q=Bill&wt=json&indent=true'
-        param = {'q': query, 'fl': 'id,name,college_id,class_id,credit,hours,score', 'rows': 1500, 'wt': 'json',
-                 'indent': 'true'}
-
-        r = requests.get(cs_url, params=param)
-
-        query_res = http_get(r.url)
-        # json_r = bytes.decode(query_res)
-        json_r = json.loads(bytes.decode(query_res))
-        query_list = json_r['response']['docs']
-        # print (query_list)
+        # print(query)
         ans = []
-        for i in query_list:
-            ## print("*****   ", i)
-            ## print("$$$$$   ", i['score'])
-            if (i['score'] >= 5):
-                ans.append(i)
-        # print("---------------------------------------")
-        # print("All: ",len(query_list), "score > 5:",len(ans))
-        # print(ans)
-        return HttpResponse(json.dumps({'query_list': ans}, cls=ComplexEncoder))
+        name_query = Course.objects.filter(Q(name__contains=query))
+        if len(name_query)!=0:
+            for course in name_query:
+                course_info = {}
+                course_info['course_name'] = course.name
+                course_info['course_id'] = course.id
+                course_info['course_academy'] = course.college_id
+                course_info['course_hours'] = str(course.hours)
+                course_info['course_credit'] = str(course.credit)
+                course_info['course_class'] = course.teacher
+                ans.append(course_info)
+        else:
+            code_query = Course.objects.filter(course_code__contains=query)
+            if len(name_query) != 0:
+                for course in code_query:
+                    course_info = {}
+                    course_info['course_name'] = course.name
+                    course_info['course_id'] = course.id
+                    course_info['course_academy'] = course.college_id
+                    course_info['course_hours'] = str(course.hours)
+                    course_info['course_credit'] = str(course.credit)
+                    course_info['course_class'] = course.teacher
+                    ans.append(course_info)
+            else:
+                ans = []
+        print(ans)
+        return HttpResponse(json.dumps({'query_list':ans}))
         ## print(json.dumps({'query_list': query_list}))
         ## print(json.dumps({'query_list': ans}))
 
@@ -520,6 +530,14 @@ def course_query(request):
 # EFFECTS: return data {'resource_id_list': query_list}
 #          query_list is a list whose course_id = request.get('id') is dicts like (1, 2, 3, 4, 6)...
 # retrun like: {"resource_id_list": [1, 2, 3, 4, 6]}
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, obj):
+         if isinstance(obj, decimal.Decimal):
+            return float(obj)
+         return super(DecimalEncoder, self).default(obj)
+
+
+'{"key1": "string", "key2": 10, "key3": 1.45}'
 @csrf_exempt
 def resource_id_list(request):
     if (request.method == "POST"):
@@ -2160,75 +2178,92 @@ def course_table(request):
         
         for li in course_list:
             if li['XQ1']:
-                col = 0
-                coursetimes = li['XQ1'].split(',')
-                for cts in coursetimes:
-                    courseitem = {}
-                    place = cts.index(' ')
-                    coursetime = cts[place:cts.index('-',place+1)]
-                    courseitem['id'] = li['id']
-                    courseitem['lessonsName'] = li['name']
-                    courseitem['lessonsAddress'] = li['lessonsAddress']
-                    courseitem['lessonsTeacher'] = li['teacher']
-                    courseitem['lessonsRemark'] = cts.split(' ')[0]
-                    print(int(int(coursetime)/2))
-                    respondlist[int(int(coursetime)/2)][col]=courseitem
+                try:
+                    col = 0
+                    coursetimes = li['XQ1'].split(',')
+                    for cts in coursetimes:
+                        courseitem = {}
+                        place = cts.index(' ')
+                        coursetime = cts[place:cts.index('-',place+1)]
+                        courseitem['id'] = li['id']
+                        courseitem['lessonsName'] = li['name']
+                        courseitem['lessonsAddress'] = li['lessonsAddress']
+                        courseitem['lessonsTeacher'] = li['teacher']
+                        courseitem['lessonsRemark'] = cts.split(' ')[0]
+                        print(int(int(coursetime)/2))
+                        respondlist[int(int(coursetime)/2)][col]=courseitem
+                except:
+                    pass
             if li['XQ2']:
-                col = 1
-                coursetimes = li['XQ2'].split(',')
-                for cts in coursetimes:
-                    courseitem = {}
-                    place = cts.index(' ')
-                    coursetime = cts[place:cts.index('-',place+1)]
-                    courseitem['id'] = li['id']
-                    courseitem['lessonsName'] = li['name']
-                    courseitem['lessonsAddress'] = li['lessonsAddress']
-                    courseitem['lessonsTeacher'] = li['teacher']
-                    courseitem['lessonsRemark'] = cts.split(' ')[0]
-                    print(int(int(coursetime)/2))
-                    respondlist[int(int(coursetime)/2)][col]=courseitem
+                try:
+                    col = 1
+                    coursetimes = li['XQ2'].split(',')
+                    for cts in coursetimes:
+                        courseitem = {}
+                        place = cts.index(' ')
+                        coursetime = cts[place:cts.index('-',place+1)]
+                        courseitem['id'] = li['id']
+                        courseitem['lessonsName'] = li['name']
+                        courseitem['lessonsAddress'] = li['lessonsAddress']
+                        courseitem['lessonsTeacher'] = li['teacher']
+                        courseitem['lessonsRemark'] = cts.split(' ')[0]
+                        print(int(int(coursetime)/2))
+                        respondlist[int(int(coursetime)/2)][col]=courseitem
+                except:
+                    pass
             if li['XQ3']:
-                col = 2
-                coursetimes = li['XQ3'].split(',')
-                for cts in coursetimes:
-                    courseitem = {}
-                    place = cts.index(' ')
-                    coursetime = cts[place:cts.index('-',place+1)]
-                    courseitem['id'] = li['id']
-                    courseitem['lessonsName'] = li['name']
-                    courseitem['lessonsAddress'] = li['lessonsAddress']
-                    courseitem['lessonsTeacher'] = li['teacher']
-                    courseitem['lessonsRemark'] = cts.split(' ')[0]
-                    print(int(int(coursetime)/2))
-                    respondlist[int(int(coursetime)/2)][col]=courseitem
+                try:
+                    col = 2
+                    coursetimes = li['XQ3'].split(',')
+                    for cts in coursetimes:
+                        courseitem = {}
+                        place = cts.index(' ')
+                        coursetime = cts[place:cts.index('-',place+1)]
+                        courseitem['id'] = li['id']
+                        courseitem['lessonsName'] = li['name']
+                        courseitem['lessonsAddress'] = li['lessonsAddress']
+                        courseitem['lessonsTeacher'] = li['teacher']
+                        courseitem['lessonsRemark'] = cts.split(' ')[0]
+                        print(int(int(coursetime)/2))
+                        respondlist[int(int(coursetime)/2)][col]=courseitem
+                except:
+                    pass
             if li['XQ4']:
-                col = 3
-                coursetimes = li['XQ4'].split(',')
-                for cts in coursetimes:
-                    courseitem = {}
-                    place = cts.index(' ')
-                    coursetime = cts[place:cts.index('-',place+1)]
-                    courseitem['id'] = li['id']
-                    courseitem['lessonsName'] = li['name']
-                    courseitem['lessonsAddress'] = li['lessonsAddress']
-                    courseitem['lessonsTeacher'] = li['teacher']
-                    courseitem['lessonsRemark'] = cts.split(' ')[0]
-                    print(int(int(coursetime)/2))
-                    respondlist[int(int(coursetime)/2)][col]=courseitem
+                try:
+                    col = 3
+                    coursetimes = li['XQ4'].split(',')
+                    print("coursetimes:"+str(coursetimes))
+                    for cts in coursetimes:
+                        courseitem = {}
+                        place = cts.index(' ')
+                        coursetime = cts[place:cts.index('-',place+1)]
+                        courseitem['id'] = li['id']
+                        courseitem['lessonsName'] = li['name']
+                        courseitem['lessonsAddress'] = li['lessonsAddress']
+                        courseitem['lessonsTeacher'] = li['teacher']
+                        courseitem['lessonsRemark'] = cts.split(' ')[0]
+                        print(int(int(coursetime)/2))
+                        respondlist[int(int(coursetime)/2)][col]=courseitem
+                except:
+                    pass
             if li['XQ5']:
-                col = 4
-                coursetimes = li['XQ5'].split(',')
-                for cts in coursetimes:
-                    courseitem = {}
-                    place = cts.index(' ')
-                    coursetime = cts[place:cts.index('-',place+1)]
-                    courseitem['id'] = li['id']
-                    courseitem['lessonsName'] = li['name']
-                    courseitem['lessonsAddress'] = li['lessonsAddress']
-                    courseitem['lessonsTeacher'] = li['teacher']
-                    courseitem['lessonsRemark'] = cts.split(' ')[0]
-                    print(int(int(coursetime)/2))
-                    respondlist[int(int(coursetime)/2)][col]=courseitem
+                try:
+                    col = 4
+                    coursetimes = li['XQ5'].split(',')
+                    print('coursetimes:'+str(coursetimes))
+                    for cts in coursetimes:
+                        courseitem = {}
+                        place = cts.index(' ')
+                        coursetime = cts[place:cts.index('-',place+1)]
+                        courseitem['id'] = li['id']
+                        courseitem['lessonsName'] = li['name']
+                        courseitem['lessonsAddress'] = li['lessonsAddress']
+                        courseitem['lessonsTeacher'] = li['teacher']
+                        courseitem['lessonsRemark'] = cts.split(' ')[0]
+                        print(int(int(coursetime)/2))
+                        respondlist[int(int(coursetime)/2)][col]=courseitem
+                except:
+                    pass
         return HttpResponse(json.dumps({'respondlist': respondlist}))
     else:
         print(1)
