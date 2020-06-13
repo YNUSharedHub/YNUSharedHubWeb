@@ -285,7 +285,7 @@ export default {
   }
   .title{
     text-align: center;
-    font-size: 32px;
+    font-size: 18px;
     padding-bottom: 30px;
   }
   .button_group_static{

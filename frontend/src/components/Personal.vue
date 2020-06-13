@@ -143,7 +143,7 @@
         </el-form-item>
 
         <el-form-item label="密码" type="password" :label-width="form_label_width" prop="password" required>
-          <el-input v-model="ynuform.password" auto-complete="off" placeholder="统一身份认证密码"></el-input>
+          <el-input v-model="ynuform.password" type="password" auto-complete="off" placeholder="统一身份认证密码"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

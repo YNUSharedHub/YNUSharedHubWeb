@@ -2,7 +2,7 @@
   <div>
     <Header></Header>
     <div style="margin-left: 11%;">
-      <HR style="margin-top: 50px; FILTER: alpha (opacity = 100, finishopacity =0 , style= 3 )" width="80%">
+      <!-- <HR style="margin-top: 50px; FILTER: alpha (opacity = 100, finishopacity =0 , style= 3 )" width="80%"> -->
       <div style="margin-top: 40px;margin-bottom: 500px;margin-left: 30px;">
         <el-col :span="14">
           <div id="pieReport" style="width: 550px;height: 400px;"></div>
@@ -16,7 +16,7 @@
           <div class="seven_echarts" id="seven" style="width: 400px;height: 350px;margin-top: 20px;"></div>
         </el-col>
       </div>
-      <HR style=" FILTER: alpha (opacity = 100, finishopacity =0 , style= 3 )" width="80%">
+      <!-- <HR style=" FILTER: alpha (opacity = 100, finishopacity =0 , style= 3 )" width="80%"> -->
     </div>
   </div>
 </template>
