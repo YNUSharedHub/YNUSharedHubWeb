@@ -2,7 +2,7 @@
     <div id="course">
         <Header></Header>
             <el-col :span="24" class="navigator" style="margin-top: 20px">
-              <el-tree :data="tree_data" :props="defaultProps" accordion @node-click="course_tree_clicked" class="course_tree">
+              <el-tree :data="tree_data" accordion @node-click="course_tree_clicked" class="course_tree">
               </el-tree>
             <section class="course_content_container">
                 <div class = "grid-content bg-purple-light">
@@ -285,16 +285,18 @@ export default {
             self.total = data['query_list'].length
             self.storage = []
             for (var i = 0; i < data['query_list'].length; i++) {
+              
+              console.log(data['query_list'][i]['course_class'])
               var course = data['query_list'][i]
-              var college_id = course['college_id']
-              var college_info = (college_map.hasOwnProperty(college_id)) ? college_map[college_id] : college_id.toString()
+              var college_id = course['course_academy']
+              var college_info = (college_map.hasOwnProperty(college_id)) ? college_map[college_id] : String(college_id)
               self.storage.push({
-                'course_name': course['name'],
-                'course_id': course['id'],
+                'course_name': course['course_name'],
+                'course_id': course['course_id'],
                 'course_academy': college_info,
-                'course_hours': course['hours'],
-                'course_credit': course['credit'],
-                'course_class': course['teacher']
+                'course_hours': course['course_hours'],
+                'course_credit': course['course_credit'],
+                'course_class': course['course_class']
               })
             }
           },

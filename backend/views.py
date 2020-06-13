@@ -85,7 +85,7 @@ def userRegister(request):
             registerForm = RegisterForm(
                 {'username': username, 'password1': password1, 'password2': password2, 'email': email, 'gender': gender,
                  'nickname': nickname, 'intro': intro})
-            print('email: ', email)
+            # print('email: ', email)
             if not registerForm.is_valid():
                 return HttpResponse(json.dumps({'error': 201}, cls=ComplexEncoder))
 
@@ -103,7 +103,7 @@ def userRegister(request):
             profile.intro = intro
             profile.college_id = 1
             profile.save()
-            print(1)
+            # # print(1)
             # 注册成功以后自动进行登录，登录前需要先验证，去掉注释后需要修改your url，HttpResponseRedirect进行页面重定向
             # newUser=auth.authenticate(username=username,password=password1)
             # if newUser is not None:
@@ -111,7 +111,7 @@ def userRegister(request):
             #     return HttpResponseRedirect("127.0.0.1:8000")
 
 
-    # print('finish send email')
+    # # print('finish send email')
     except Exception as e:
         return HttpResponse(json.dumps({'error': 202}))
     # 发送验证邮件
@@ -193,7 +193,7 @@ def refresh_click_post_count(request):
             request.session['last_post_click'] = {}
             return refresh(now_time, post_id)
         else:
-            # print('last_post: ', last_post_click_dict)
+            # # print('last_post: ', last_post_click_dict)
             last_post_click = last_post_click_dict.get(str(post_id))
             if (last_post_click != None):  # has clicked the post
                 last_click_time = datetime.datetime.strptime(last_post_click[:-7], "%Y-%m-%d %H:%M:%S")
@@ -239,7 +239,7 @@ def refresh_visit_course_count(request):
             request.session['last_view'] = {}
             return refresh(now_time, course_id)
         else:
-            # print(last_view_dict)
+            # # print(last_view_dict)
             last_view = last_view_dict.get(str(course_id))
             if (last_view != None):  # has visited the course
                 last_visit_time = datetime.datetime.strptime(last_view[:-7], "%Y-%m-%d %H:%M:%S")
@@ -276,7 +276,7 @@ def refresh_download_resource_count(request):
             request.session['last_download'] = {}
             return refresh(now_time, resource_id)
         else:
-            # print(last_download_dict)
+            # # print(last_download_dict)
             last_download = last_download_dict.get(str(resource_id))
             if (last_download != None):  # has visited the course
                 last_download_time = datetime.datetime.strptime(last_download[:-7], "%Y-%m-%d %H:%M:%S")
@@ -306,9 +306,9 @@ def user_information(request):
             user_info = interface.user_information_by_id(user_id)
         else:
             return HttpResponse(json.dumps({}))
-        # print("******************")
-        # print(user_info)
-        # print("******************")
+        # # print("******************")
+        # # print(user_info)
+        # # print("******************")
         return HttpResponse(json.dumps({'user_info': user_info}, cls=ComplexEncoder))
 
 
@@ -382,7 +382,7 @@ class CustomBackend(ModelBackend):
 def email_check(request):
     if (request.method == "POST"):
         user_id = request.user.id
-        print("User:", user_id)
+        # print("User:", user_id)
         user = User.objects.get(id=user_id)
         if user is None:
             return HttpResponse(json.dumps({'error': 1}))
@@ -416,7 +416,7 @@ def userLogin(request):
             if user is not None:
                 auth.login(request, user)
                 request.session['username'] = username  # store in session
-                print(json.dumps({'error': 0, 'username': user.username}))
+                # print(json.dumps({'error': 0, 'username': user.username}))
                 return HttpResponse(json.dumps({'error': 0, 'username': user.username}))
             else:
                 return HttpResponse(json.dumps({'error': 101}))  # username not exists
@@ -435,16 +435,16 @@ def userLogout(request):
     if (request.method == "POST"):
         # error = []
         try:
-            ## print(request.user)
-            ## print(request.user.is_authenticated())
+            ## # print(request.user)
+            ## # print(request.user.is_authenticated())
             auth.logout(request)
             # del request.session['username']
-            ## print(request.user)
-            ## print(request.user.is_authenticated())
+            ## # print(request.user)
+            ## # print(request.user.is_authenticated())
             return HttpResponse(json.dumps({'error': 0}))
         except Exception as e:
             # error.append(str(e))
-            ## print(error)
+            ## # print(error)
             return HttpResponse(json.dumps({'error': 301}))
 
 
@@ -452,22 +452,22 @@ def userLogout(request):
 @csrf_exempt
 def isLoggedIn(request):
     if request.method == "POST":
-        # print(request.environ)
-        # print(request.body)
+        # # print(request.environ)
+        # # print(request.body)
         user_session = request.session.get('username', default=None)
-        print(request.session.items())
+        # print(request.session.items())
         if user_session is None:
             return HttpResponse(json.dumps(None))
 
         username = interface.get_username(user_session)
-        # print(username)
+        # # print(username)
         id = User.objects.get(username=username['username']).id
         is_ynu = UserProfile.objects.get(user_id=id).is_ynu
         if(is_ynu=='0'):
             reis_ynu = False
         else:
             reis_ynu = True
-        print(json.dumps({'username': username, 'userid': id, 'is_ynu': reis_ynu}))
+        # print(json.dumps({'username': username, 'userid': id, 'is_ynu': reis_ynu}))
         return HttpResponse(json.dumps({'username': username['username'], 'userid': id, 'is_ynu': reis_ynu}))
 
 
@@ -490,8 +490,8 @@ def course_query(request):
         data = json.loads(data)
         # data = json.loads(request.body.decode())
         query = str(data.get('keyword'))
-        # print ('query: ' + query)
-        # print(query)
+        # # print ('query: ' + query)
+        # # print(query)
         ans = []
         name_query = Course.objects.filter(Q(name__contains=query))
         if len(name_query)!=0:
@@ -518,10 +518,10 @@ def course_query(request):
                     ans.append(course_info)
             else:
                 ans = []
-        print(ans)
+        # print(ans)
         return HttpResponse(json.dumps({'query_list':ans}))
-        ## print(json.dumps({'query_list': query_list}))
-        ## print(json.dumps({'query_list': ans}))
+        ## # print(json.dumps({'query_list': query_list}))
+        ## # print(json.dumps({'query_list': ans}))
 
 
 # Course id list(by ohazyi)
@@ -545,7 +545,7 @@ def resource_id_list(request):
         data = json.loads(data)
         # data = json.loads(request.body.decode())
         course_id = str(data.get('course_id'))
-        # # print ('course_id: ' + course_id)
+        # # # print ('course_id: ' + course_id)
         res = interface.resource_courseid_list(course_id)
         return HttpResponse(json.dumps({'resource_id_list': res}, cls=ComplexEncoder))
 
@@ -561,7 +561,7 @@ def handle_upload_resource(f, path):
         if (not os.path.exists(path)):
             os.makedirs(path)
         file_name = path + "/" + file_name
-        # print(file_name)
+        # # print(file_name)
         destination = open(file_name, 'wb+')
         for chunk in f.chunks():
             destination.write(chunk)
@@ -582,7 +582,7 @@ def resourceUpload(request):
         if not request.user.is_authenticated:  # if the user is not authenticated
             return HttpResponse(json.dumps({'error': 1}))
         upload_user_id = request.user.id
-        # print(request.user.id)
+        # # print(request.user.id)
         data = request.POST
         intro = str(data.get('intro'))
         # course_id = int(data.get('course_id'))
@@ -685,9 +685,9 @@ def download(request, resource_id):  # 2 parameters
             else:
                 response['Content-Disposition'] = 'attachment;filename="{0}"'.format(
                     real_name)  # display the real_name of the file when user download it
-            ## print(response)
+            ## # print(response)
         except Exception as e:
-            ## print(e)
+            ## # print(e)
             return HttpResponse("未找到该文件")
         return response
 
@@ -733,7 +733,7 @@ def user_modify_info(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
             return HttpResponse(json.dumps({'error': 1}))
-        # print(request.POST)
+        # # print(request.POST)
         nickname = str(request.POST.get('nickname'))
         gender = str(request.POST.get('gender'))
         intro = str(request.POST.get('intro'))
@@ -747,11 +747,11 @@ def user_modify_info(request):
             userprofile.intro = intro
             userprofile.college_id = college_id
             userprofile.save()
-            # print('Modify Success')
+            # # print('Modify Success')
             return HttpResponse(json.dumps({'error': 0}))
         else:
             errors.extend(UIMForm.errors.values())
-            # print(errors)     
+            # # print(errors)     
             return HttpResponse(json.dumps({'error': 1}))
 
 
@@ -762,9 +762,9 @@ def ip_record(request):
             ip = request.META['HTTP_X_FORWARDED_FOR']
         else:
             ip = request.META['REMOTE_ADDR']
-            # print('ip:', ip)
+            # # print('ip:', ip)
         interface.refresh_ip_visit_info(str(ip))
-        print(ip)
+        # print(ip)
         return HttpResponse(json.dumps({'result': 0}))
 
 
@@ -790,14 +790,14 @@ def posting_publish(request):
             post.category = category
             post.main_follow_id = -1;
             post.intro = intro;
-            # print("intro", intro)
+            # # print("intro", intro)
             post.save()
         else:
             errors.extend(post_form.errors.values())
-            # print(errors)
+            # # print(errors)
             return HttpResponse(json.dumps({'error': 1}))
         follow_form = FollowForm({'post_id': post.id, 'user_id': user_id, 'content': content, 'editor': editor})
-        # print(post.id,user_id,content,editor)
+        # # print(post.id,user_id,content,editor)
         if (follow_form.is_valid()):
             follow = Follow()
             follow.post_id = post.id
@@ -810,7 +810,7 @@ def posting_publish(request):
             post.save()
         else:
             errors.extend(follow_form.errors.values())
-            # print(errors)
+            # # print(errors)
             post.delete()
             return HttpResponse(json.dumps({'error': 1}))
         return HttpResponse(json.dumps({'error': 0}))
@@ -946,12 +946,12 @@ def post_infor_list(request):
         data = json.dumps(request.POST)
         data = json.loads(data)
         id_list = data.get('id_list')
-        ## print(id_list)
+        ## # print(id_list)
         if (',' in id_list):
             id_list = id_list[1:-1].split(',')
         else:
             id_list = [id_list[1:-1]]
-        ## print(id_list)
+        ## # print(id_list)
         get_content = str(data.get('get_content'))
         get_grade = str(data.get('get_grade'))
         get_follow_count = str(data.get('get_follow_count'))
@@ -987,7 +987,7 @@ def post_infor_list(request):
             main_follow = Follow.objects.get(id=post['main_follow_id'])
             post['user_id'] = main_follow.user_id
             post['content'] = main_follow.content
-            # # print(main_follow.content)
+            # # # print(main_follow.content)
             post['user_name'] = User.objects.get(id=post['user_id']).username
             post['course_name'] = Course.objects.get(id=post['course_id']).name
             # post['update_time'] = '2017-11-18'
@@ -1001,12 +1001,12 @@ def post_infor_list(request):
 def follow_id_list(request):
     if (request.method == 'POST'):
         post_id = int(request.POST.get('post_id'))
-        # print(post_id)
+        # # print(post_id)
         result = Post.objects.filter(id=post_id)
         if (result.count() != 1):  # if(len(result) != 1):
             return HttpResponse(json.dumps({'main_id': -1, 'id_list': []}))
         main_id = result[0].main_follow_id
-        # print(main_id)
+        # # print(main_id)
         id_list = list(
             Follow.objects.filter(post_id=post_id).order_by('-pos_eva_count', 'neg_eva_count').values_list('id',
                                                                                                            flat=True))
@@ -1022,25 +1022,25 @@ def follow_info_list(request):
         data = json.dumps(request.POST)
         data = json.loads(data)
         id_list = data.get('id_list')
-        # print(id_list)
+        # # print(id_list)
         if (',' in id_list):
             id_list = id_list[1:-1].split(',')
         else:
             id_list = [id_list[1:-1]]
-        # print(id_list)
+        # # print(id_list)
         cur_user_id = request.user.id
         info_list = []
         for item in id_list:
             item = int(item)
             result = Follow.objects.filter(id=item)
-            print(result[0])
+            # print(result[0])
             if (result.count() != 1):  # if(len(result) != 1):
                 # error
                 continue
             follow = result.values('user_id', 'post_time', 'edit_time', 'content', 'pos_eva_count', 'neg_eva_count')[0]
             follow['username'] = User.objects.get(id=follow['user_id']).username
             follow['self_intro'] = UserProfile.objects.get(user_id=follow['user_id']).intro
-            print(follow)
+            # print(follow)
             if follow['user_id'] == cur_user_id:
                 follow['is_poster'] = True
             else:
@@ -1055,7 +1055,7 @@ def follow_info_list(request):
                 else:
                     follow['evaluated_grade'] = result[0]
             info_list.append(follow)
-            # # print(info_list)
+            # # # print(info_list)
         return HttpResponse(json.dumps({'info_list': info_list}, cls=ComplexEncoder))
 
 
@@ -1068,14 +1068,14 @@ def userid_postid_get_follow(request):
         post_id = int(data.get('post_id'))
         user_id = request.user.id
         if (user_id == None):
-            # print("NNNNNNNNNNNNNONE")
+            # # print("NNNNNNNNNNNNNONE")
             return HttpResponse(json.dumps({'content': '', 'editor': -1}))
         result = Follow.objects.filter(post_id=post_id, user_id=user_id).values('content', 'editor')
         if (result.count() != 1):  # if(len(result) != 1):
             # error
-            # print("NNNNNNNNNNNNNNNOT FOUND")
+            # # print("NNNNNNNNNNNNNNNOT FOUND")
             return HttpResponse(json.dumps({'content': '', 'editor': -1}))
-        # print("FFFFFFFFFFFFFFFFFFFOUND")
+        # # print("FFFFFFFFFFFFFFFFFFFOUND")
         return HttpResponse(json.dumps({'content': result[0]['content'], 'editor': result[0]['editor']}))
 
 
@@ -1194,7 +1194,7 @@ def resource_evaluate(request):  # resource_id, user_id, grade:
         user_id = str(request.user.id)
         grade = int(data.get('grade'))
 
-        # print ('resource_id: ' + resource_id + 'user_id: '+ user_id + 'grade: ' +str(grade))
+        # # print ('resource_id: ' + resource_id + 'user_id: '+ user_id + 'grade: ' +str(grade))
         if (grade >= 1 and grade <= 5):  # 评分必须在1-5之间
             eva = Resource_Evaluation()
             eva.resource_id = resource_id
@@ -1237,7 +1237,7 @@ def resource_evaluation_grade_count(request):
             for r in result2:  # for i in range(0, len(result2)):
                 tot_grade += r.grade
                 avg_grade = float(tot_grade) / float(result2.count())  # len(result2)
-        # print("tot_grade = ",tot_grade,"avg_grade = ", avg_grade)
+        # # print("tot_grade = ",tot_grade,"avg_grade = ", avg_grade)
         return HttpResponse(json.dumps(
             {'avg_grade': avg_grade, 'user_grade': user_grade, 'grade_count': result2.count()}))  # len(result2)
 
@@ -1251,7 +1251,7 @@ def avg_score(resource_id):
         for r in result2:  # len(result2)
             tot_grade += r.grade
             avg_grade = float(tot_grade) / float(result2.count())  # float(len(result2)
-    # print("tot_grade = ",tot_grade,"avg_grade = ", avg_grade)
+    # # print("tot_grade = ",tot_grade,"avg_grade = ", avg_grade)
     return avg_grade
 
 
@@ -1280,7 +1280,7 @@ def course_contri_list(request):
     if (request.method == 'POST'):
 
         #        time1 = time.clock()
-        #        print("@@!##@$E")
+        #        # print("@@!##@$E")
         data = json.dumps(request.POST)
         data = json.loads(data)
 
@@ -1293,7 +1293,7 @@ def course_contri_list(request):
 
         users = User.objects.filter()
         #        time2 = time.clock()
-        #        print('T2', time2-time1)
+        #        # print('T2', time2-time1)
 
         dict = {}
         users_cnt = User.objects.filter().count()
@@ -1353,10 +1353,10 @@ def course_contri_list(request):
 
             dict_list.append(dict_tmp)
 
-        print(dict_list)
+        # print(dict_list)
 
         #        time3 = time.clock()
-        #        print('T3', time3-time1)
+        #        # print('T3', time3-time1)
         return HttpResponse(json.dumps({'contri_list': dict_list}, cls=ComplexEncoder))
 
 
@@ -1462,7 +1462,7 @@ def course_type_list(request):
             course_info["credit"] = float(c.credit)
             ans.append(course_info)
 
-        # print(ans)
+        # # print(ans)
         return HttpResponse(json.dumps({'course_type_list': ans}, cls=ComplexEncoder))
 
 
@@ -1595,10 +1595,10 @@ def course_like_count(request):
         if (user_id != None):
             likes = R_Course_User_Like.objects.filter(course_id=course_id, user_id=user_id)
             user_like = (likes.count() > 0)  # len(likes)
-            # print("like:", user_like, likes)
+            # # print("like:", user_like, likes)
         else:
             user_like = 0
-            # print("user:", user_id)
+            # # print("user:", user_id)
 
         return HttpResponse(json.dumps({'like_count': ans_likes, 'liked': user_like}))
 
@@ -1673,7 +1673,7 @@ def most_download_resource_list(request):
         college_id_str = str(college_id)
         if (len(college_id_str) == 1):
             college_id_str = "0" + str(college_id)
-        # print(college_id_str)
+        # # print(college_id_str)
         if (college_id == -1):  # 统计全站的资源
             resources = Resource.objects.filter().order_by('-download_count')  # course_code__contains="01"
         else:
@@ -1699,10 +1699,10 @@ def most_download_resource_list(request):
             dict["download_count"] = r.download_count
             dict["resource_id"] = r.id
             dict["name"] = r.name
-            # print(dict)
+            # # print(dict)
             ans.append(dict)
             cnt = cnt + 1
-        # print(ans)
+        # # print(ans)
         return HttpResponse(json.dumps({'result': ans}))
 
 
@@ -1779,11 +1779,11 @@ def login_tongpao(request):
     }
     r = requests.post(url, headers=headers, data=json.dumps(data))
 
-    # print(r.text)
+    # # print(r.text)
     json_code = json.loads(r.text)
-    # print(json_code)
+    # # print(json_code)
     token = str(json_code['token'])
-    # print(token) #返回这个token给前端跳？
+    # # print(token) #返回这个token给前端跳？
     return HttpResponse(json.dumps({'url': "https://tongpao.qinix.com/auths/login?token=" + token}))
     # return HttpResponseRedirect("https://tongpao.qinix.com/auths/login?token="+token) #HttpResponse(json.dumps({'error': 0}))
 
@@ -1794,15 +1794,15 @@ def login_tongpao(request):
 # "tongpao_username":"14011100","phone_number":["17801016282"],"email":"291045048@qq.com","real_name":"赵奕","birthday":"1996-10-31","gender":"男","grade":2015,"student_id":"14011100","college":"计算机学院","major":"计算机科学与技术","class_name":"150617","identification":"320982199610312298"}
 @csrf_exempt
 def tongpao(request):
-    # print("HHHHH")
+    # # print("HHHHH")
     if (request.method == 'POST'):
         data = json.dumps(request.POST)
         data = json.loads(data)
-        # print("TONGPAO!!!")
+        # # print("TONGPAO!!!")
 
         code = str(data.get('code'))  # code = str(request.GET["code"])
         #        code = str(request.GET["code"])
-        # print("code = ",code)
+        # # print("code = ",code)
 
         url = 'https://tongpao.qinix.com/auths/get_data'
         headers = {'Tongpao-Auth-appid': 'c643da987bdc3ec74efbb0ef7927f7ea',
@@ -1810,22 +1810,22 @@ def tongpao(request):
         data = {
             "code": code,
         }
-        # print(data)
+        # # print(data)
         r = requests.post(url, headers=headers, data=data)
-        # print(r.text)
+        # # print(r.text)
         json_text = json.loads(r.text)
         profile = json_text["data"]
-        # print(profile)
-        # print(type(profile))
+        # # print(profile)
+        # # print(type(profile))
         student_id = str(profile["student_id"])
-        # print(type(student_id))
+        # # print(type(student_id))
 
         students = User.objects.filter(username=student_id)
         if (students.count() > 0):  # 之前已经登录过 #len(students)
             #        test = requests.post("http://127.0.0.1:8000/sign/login/",data={"error":0, "username":student_id,"password":"111111111111111111111111111111"})
-            #        # print(test.text)
-            # print("ENNNDDD")
-            # print("user:", student_id)
+            #        # # print(test.text)
+            # # print("ENNNDDD")
+            # # print("user:", student_id)
             return HttpResponse(json.dumps({"error": 0, "username": student_id}))
         #        request.session['username'] = student_id # store in session
         #        return HttpResponseRedirect("/")
@@ -1871,9 +1871,9 @@ def tongpao(request):
 
         if ("phone_number" in profile):
             phone_number = profile["phone_number"]
-            # print(phone_number)
+            # # print(phone_number)
             phone_number = int(phone_number[0])
-            # print(phone_number)
+            # # print(phone_number)
         if ("email" in profile):
             email = profile["email"]
         if ("real_name" in profile):
@@ -1882,10 +1882,10 @@ def tongpao(request):
             birthday = profile["birthday"]
         if ("gender" in profile):
             gender = profile["gender"]
-            # print("%#!@##",gender)
+            # # print("%#!@##",gender)
             gender_dict = {"男": 1, "女": 2}
             gender = gender_dict[gender]
-            # print("@@@@",gender)
+            # # print("@@@@",gender)
         if ("grade" in profile):
             grade = profile["grade"]
         if ("college" in profile):
@@ -1900,7 +1900,7 @@ def tongpao(request):
         user = User()
         user.username = student_id
 
-        # print("!!!!username=",student_id)
+        # # print("!!!!username=",student_id)
         user.set_password("111111111111111111111111111111")
         user.is_active = True
         user.is_superuser = True
@@ -1940,9 +1940,9 @@ def tongpao(request):
         tp_u.save()
 
         #    test = requests.post("http://127.0.0.1:8000/sign/login/",data={"username":student_id,"password":"111111111111111111111111111111"})
-        #    # print(test.text)
+        #    # # print(test.text)
         # request.session['username'] = student_id # store in session
-        # print("OVVVVVEEERRR")
+        # # print("OVVVVVEEERRR")
         #    return HttpResponseRedirect("/")
         return HttpResponse(
             json.dumps({"error": 0, "username": student_id, "password": "111111111111111111111111111111"}))
@@ -2048,7 +2048,7 @@ def latest_upload_resource_list(request):
         college_id_str = str(college_id)
         if (len(college_id_str) == 1):
             college_id_str = "0" + str(college_id)
-        # print(college_id_str)
+        # # print(college_id_str)
         if (college_id == -1):  # 统计全站的资源
             resources = Resource.objects.filter().order_by('-upload_time')  # course_code__contains="01"
         else:
@@ -2060,7 +2060,7 @@ def latest_upload_resource_list(request):
         ans = []
         cnt = 0
         # siz = resources.count() #len(resources)
-        # print("siz = ", siz)
+        # # print("siz = ", siz)
         # while (i < siz):
         for r in resources:
             dict = {}
@@ -2091,7 +2091,7 @@ def user_like_course_namelist(request):
         course_id_list = R_Course_User_Like.objects.filter(user_id=user_id).values_list('course_id', flat=True)
         for course_id in course_id_list:
             course_info_list.append(interface.course_information(int(course_id)))
-            # print("like:", course_info_list)
+            # # print("like:", course_info_list)
         return HttpResponse(json.dumps({'info_list': course_info_list}))
 
 
@@ -2105,7 +2105,7 @@ def user_like_course_namelist(request):
 @csrf_exempt
 def resource_query(
         request):  # http://localhost:8080/solr/mynode2/select?q=%E6%95%B0%E6%8D%AE%E5%BA%93&fq=course_code%3AB3I08224C&rows=1000&wt=json&indent=true
-    #    print("UUUUUUUUU")
+    #    # print("UUUUUUUUU")
     #    query = request.GET['keyword']
     #    course_id = request.GET['course_id']
 
@@ -2145,12 +2145,12 @@ def course_table(request):
         data = json.dumps(request.POST)  # new
         data = json.loads(data)
         user_course = User.objects.get(id=data.get('id')).course_set.all()
-        # print(type(user_course[0]))
+        # # print(type(user_course[0]))
         course_list = []
         if user_course:
             for course in user_course:
                 course_list.append(eval(objects_to_json(course, Course))[0])
-            print(course_list)
+            # print(course_list)
             # return HttpResponse(json.dumps({'course_list': course_list}))
         else:
             user = UserProfile.objects.get(user_id=data.get('id'))
@@ -2167,7 +2167,7 @@ def course_table(request):
                         course_list.append(eval(objects_to_json(course, Course))[0])
                 except:
                     pass
-            print(course_list)
+            # print(course_list)
 
         respondlist=[]
         for i in range(5):
@@ -2190,7 +2190,7 @@ def course_table(request):
                         courseitem['lessonsAddress'] = li['lessonsAddress']
                         courseitem['lessonsTeacher'] = li['teacher']
                         courseitem['lessonsRemark'] = cts.split(' ')[0]
-                        print(int(int(coursetime)/2))
+                        # print(int(int(coursetime)/2))
                         respondlist[int(int(coursetime)/2)][col]=courseitem
                 except:
                     pass
@@ -2207,7 +2207,7 @@ def course_table(request):
                         courseitem['lessonsAddress'] = li['lessonsAddress']
                         courseitem['lessonsTeacher'] = li['teacher']
                         courseitem['lessonsRemark'] = cts.split(' ')[0]
-                        print(int(int(coursetime)/2))
+                        # print(int(int(coursetime)/2))
                         respondlist[int(int(coursetime)/2)][col]=courseitem
                 except:
                     pass
@@ -2224,7 +2224,7 @@ def course_table(request):
                         courseitem['lessonsAddress'] = li['lessonsAddress']
                         courseitem['lessonsTeacher'] = li['teacher']
                         courseitem['lessonsRemark'] = cts.split(' ')[0]
-                        print(int(int(coursetime)/2))
+                        # print(int(int(coursetime)/2))
                         respondlist[int(int(coursetime)/2)][col]=courseitem
                 except:
                     pass
@@ -2232,7 +2232,7 @@ def course_table(request):
                 try:
                     col = 3
                     coursetimes = li['XQ4'].split(',')
-                    print("coursetimes:"+str(coursetimes))
+                    # print("coursetimes:"+str(coursetimes))
                     for cts in coursetimes:
                         courseitem = {}
                         place = cts.index(' ')
@@ -2242,7 +2242,7 @@ def course_table(request):
                         courseitem['lessonsAddress'] = li['lessonsAddress']
                         courseitem['lessonsTeacher'] = li['teacher']
                         courseitem['lessonsRemark'] = cts.split(' ')[0]
-                        print(int(int(coursetime)/2))
+                        # print(int(int(coursetime)/2))
                         respondlist[int(int(coursetime)/2)][col]=courseitem
                 except:
                     pass
@@ -2250,7 +2250,7 @@ def course_table(request):
                 try:
                     col = 4
                     coursetimes = li['XQ5'].split(',')
-                    print('coursetimes:'+str(coursetimes))
+                    # print('coursetimes:'+str(coursetimes))
                     for cts in coursetimes:
                         courseitem = {}
                         place = cts.index(' ')
@@ -2260,13 +2260,13 @@ def course_table(request):
                         courseitem['lessonsAddress'] = li['lessonsAddress']
                         courseitem['lessonsTeacher'] = li['teacher']
                         courseitem['lessonsRemark'] = cts.split(' ')[0]
-                        print(int(int(coursetime)/2))
+                        # print(int(int(coursetime)/2))
                         respondlist[int(int(coursetime)/2)][col]=courseitem
                 except:
                     pass
         return HttpResponse(json.dumps({'respondlist': respondlist}))
     else:
-        print(1)
+        # print(1)
         return 1
         # user.
 
@@ -2291,7 +2291,7 @@ def objects_to_json(objects, model):
 
     for obj in objects:
         dict_data = {}
-        # print(concrete_model._meta.local_fields)
+        # # print(concrete_model._meta.local_fields)
         for field in concrete_model._meta.local_fields:
             if field.name == 'user_id':
                 continue
@@ -2355,7 +2355,7 @@ def verify_studentid(request):
 
         data = json.dumps(request.POST)  # new
         data = json.loads(data)
-        print(data)
+        # print(data)
 
 
 
@@ -2379,7 +2379,7 @@ def get_user_grades(request):
     if request.method == "POST":
         data = json.dumps(request.POST)  # new
         data = json.loads(data)
-        print(data)
+        # print(data)
         user_id = data['userid']
         user = UserProfile.objects.get(user_id=user_id)
         all_course = Grades.objects.filter(user_id=str(user_id))
@@ -2395,7 +2395,7 @@ def get_user_grades(request):
                 all_gpa = GPA.objects.filter(user_id=user_id)[0].gpa
                 courses_nums = eval(GPA.objects.filter(user_id=user_id)[0].course_numbers)
                 gpas = eval(all_gpa)
-                print(gpas)
+                # print(gpas)
                 all_results = {'gpa': gpas,
                                'studentscore': [{'value': courses_nums[4], 'name': "60分以下"},
                                                 {'value': courses_nums[3], 'name': "60~70分"},
@@ -2409,7 +2409,7 @@ def get_user_grades(request):
         else:
             test = TestYnutest('D:\\只狼\\chromedriver.exe', user.studentid,user.studentpassword)
             all_information = test.test_ynutest()
-            print(all_information)
+            # print(all_information)
             all_courses_scores = all_information['coursescores']
             all_gpa = all_information['gpa_content'] # GPA
             all_course_num = all_information['num_content']
@@ -2444,7 +2444,7 @@ def get_user_grades(request):
                     result['course_grades'] = course_grade
                     course_grades.append(result)
                 else:
-                    # print(1)
+                    # # print(1)
                     continue
             return HttpResponse(json.dumps(all_results))
 
@@ -2455,7 +2455,7 @@ def get_coursegrades(request):
     if request.method == "POST":
         data = json.dumps(request.POST)  # new
         data = json.loads(data)
-        print(data)
+        # print(data)
         course_id = data['courseid']
         all_grades = Grades.objects.filter(course_id=course_id)
         add_grade = 0
