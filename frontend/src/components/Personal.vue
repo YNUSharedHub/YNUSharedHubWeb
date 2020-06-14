@@ -1,7 +1,7 @@
 <template>
   <div id="personal">
     <el-col :span="24" class="header">
-      <el-col :span="12" style="text-align:right;font-size:30px;font-weight:bold;">{{ nickname }}的花园</el-col>
+      <el-col :span="12" style="text-align:right;font-size:30px;font-weight:bold;">{{ nickname }}个人中心</el-col>
       <el-col :span="12" style="text-align:left;font-size:20px;font-style:italic;">
         <p>{{ signature }}</p>
       </el-col>

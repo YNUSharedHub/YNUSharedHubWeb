@@ -44,6 +44,9 @@
                                 <el-button
                                   size="mini"
                                   @click="to_course_page(scope.$index)">进入课程</el-button>
+                                  <el-button
+                                  size="mini"
+                                  @click="xkfz">加入选课辅助</el-button>
                               </template>
                             </el-table-column>
                             </el-table>
@@ -142,6 +145,9 @@ export default {
     }
   },
   methods: {
+    xkfz(){
+      alert('选课尚未开始！')
+    },
     to_course_page (index) {
       this.$router.push({ path: ('/course/page/' + this.courses[index]['course_id'] + '/') })
     },
