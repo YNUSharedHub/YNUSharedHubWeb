@@ -36,7 +36,7 @@
               <el-dropdown-item @click.native="login" v-else>登录</el-dropdown-item>
               <el-dropdown-item divided @click.native="logout" v-if="is_login">登出</el-dropdown-item>
               <el-dropdown-item @click.native="register" v-else>注册</el-dropdown-item>
-              <el-dropdown-item divided @click.native="tongpao" v-if="!is_login">同袍登录</el-dropdown-item>
+              <!-- <el-dropdown-item divided @click.native="tongpao" v-if="!is_login">同袍登录</el-dropdown-item> -->
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -56,7 +56,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click.native="tongpao" type="success" round>使用“同袍”认证直接登录</el-button>
+        <!-- <el-button @click.native="tongpao" type="success" round>使用“同袍”认证直接登录</el-button> -->
         <el-button type="primary" @click.native="login_confirm_clicked('login_form')">确 定</el-button>
         <el-button @click.native="login_form_visible=false">取 消</el-button>
 
@@ -95,7 +95,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click.native="tongpao" type="success" round>使用“同袍”认证免注册登录</el-button>
+        <!-- <el-button @click.native="tongpao" type="success" round>使用“同袍”认证免注册登录</el-button> -->
         <el-button type="primary" @click.native="register_confirm_clicked('register_form')">确 定</el-button>
         <el-button @click.native="register_form_visible=false">取 消</el-button>
       </span>
@@ -315,22 +315,22 @@
       }
     },
     methods: {
-      tongpao: function () {
-        var post_url = get_url(this.$store.state.dev, '/login_tongpao/')
-        var self = this
-        $.ajax({
-          ContentType: 'application/json; charset=utf-8',
-          dataType: 'json',
-          url: post_url,
-          type: 'POST',
-          success: function (data) {
-            window.location.href = data['url']
-          },
-          error: function () {
-            self.message('error', '无法连接到同袍')
-          }
-        })
-      },
+      // tongpao: function () {
+      //   var post_url = get_url(this.$store.state.dev, '/login_tongpao/')
+      //   var self = this
+      //   $.ajax({
+      //     ContentType: 'application/json; charset=utf-8',
+      //     dataType: 'json',
+      //     url: post_url,
+      //     type: 'POST',
+      //     success: function (data) {
+      //       window.location.href = data['url']
+      //     },
+      //     error: function () {
+      //       self.message('error', '无法连接到同袍')
+      //     }
+      //   })
+      // },
       handle_select: function (key, keyPath) {
         if (key === 'index') {
           this.$router.push({
